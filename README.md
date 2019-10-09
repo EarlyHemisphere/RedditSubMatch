@@ -4,8 +4,6 @@ A tool for matching Redditors with similar interests based on their subreddit su
 
 ## Please Note:
 
-This repository most likely won't be used for much development, mainly just to brainstorm ideas for the project. It could possibly be used in later iterations when the bot begins incorporating more advanced concepts involving big data.
-
 The owner of r/submatch has created a post with some outlines for how development will proceed and places for discussion, please check it out if you're interested: https://www.reddit.com/r/submatch/comments/dffo44/message_to_all_interested_programmers/
 
 ## Code
