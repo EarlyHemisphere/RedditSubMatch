@@ -2,10 +2,15 @@
 
 A tool for matching Redditors with similar interests based on their subreddit subscriptions and activity.
 
+## Please Note:
+
+This repository most likely won't be used for much development, mainly just to brainstorm ideas for the project. It could possibly be used in later iterations when the bot begins incorporating more advanced concepts involving big data.
+
+The owner of r/submatch has created a post with some outlines for how development will proceed and places for discussion, please check it out if you're interested: https://www.reddit.com/r/submatch/comments/dffo44/message_to_all_interested_programmers/
+
 ## Code
 
-Decided to setup docker just in case, can be built/ran with `./run.sh`
-i fucked up spacing in a file for some reason
+Decided to setup docker just in case, can be built/ran with `./run.sh` if Docker is installed.
 
 ## Preliminary notes based on the suggestions of Redditors
 
@@ -30,11 +35,3 @@ i fucked up spacing in a file for some reason
  - remove NSFW subreddits (or have the option to?)
  - number of subscribers in a sub (smaller subs could be a more special interest)
  - activity vs subscriptions
- 
-### Other notes:
-
- - *__Discussion with the actual owner of r/submatch is currently ongoing about how to proceed with development.__*
- - Issues will be created tomorrow regarding for anyone's input regarding:
-    - structure of the repo
-    - algorithm discussion/planning
-    - how the tool will be made available to users (webapp? bot?)
