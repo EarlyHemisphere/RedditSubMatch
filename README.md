@@ -2,6 +2,11 @@
 
 A tool for matching Redditors with similar interests based on their subreddit subscriptions and activity.
 
+## Code
+
+Decided to setup docker just in case, can be built/ran with `./run.sh`
+i fucked up spacing in a file for some reason
+
 ## Preliminary notes based on the suggestions of Redditors
 
 ### Resources
