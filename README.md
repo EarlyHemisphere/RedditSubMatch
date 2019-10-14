@@ -25,7 +25,7 @@ Decided to setup docker just in case, can be built/ran with `./run.sh` if Docker
  - priori/association rule learning
  - Hausdorff distance of sets
  - Jaccard Index
- 
+
 ### Things to take into account:
 
  - Subreddits
@@ -41,6 +41,6 @@ Decided to setup docker just in case, can be built/ran with `./run.sh` if Docker
 
 ### Website
  - For admins/moderators only
- - Users have to 
+ - Users have to
     - Provide OAuth
     - Choose which of thier subreddit subscription we can take into account
