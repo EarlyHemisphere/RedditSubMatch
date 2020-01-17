@@ -7,8 +7,6 @@ import { generateRandomString } from 'app/helpers';
 interface Props{
 }
 interface State {
-  username: string
-  password: string
 }
 
 const CLIENT_ID = "BRgd2M3wfJD7Vw"
@@ -24,18 +22,10 @@ export class Home extends React.Component<Props, State> {
   constructor(props: Props, context: any) {
     super(props, context);
     this.state = {
-      username: "",
-      password: "",
     };
   }
   getUrl = () => {
     return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`
-  }
-  onChange = (e) => {
-    this.setState({[e.target.name]: e.target.value} as Pick<State, keyof State>)
-  }
-  onSubmit = () => {
-
   }
   render() {
     return (

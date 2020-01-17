@@ -66,3 +66,5 @@ node_modules/
 .env
 
 functions/secrets
+
+package-lock.json

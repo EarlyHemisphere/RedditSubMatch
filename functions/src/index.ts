@@ -2,6 +2,9 @@ import * as functions from 'firebase-functions';
 import { getAccessToken, getSubreddits, formatSubreddits, getUserInfo, formatUserInfo } from './helpers';
 import * as admin from 'firebase-admin';
 
+
+
+admin.initializeApp() 
 const firestore = admin.firestore()
 
 
