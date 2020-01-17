@@ -15,9 +15,6 @@ interface submitUserLogin_i {
 
 exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i, context) => {
     return new Promise(async (res, rej) => {
-
-        res({ ok: true, message: "user already in the database" })
-
         let accessToken
         let subreddits
         let userInfo
