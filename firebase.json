@@ -4,6 +4,7 @@
     "source": "functions"
   },
   "hosting": {
+    "predeploy" : "cd frontend; npm run build",
     "public": "frontend/build",
     "ignore": [
       "firebase.json",

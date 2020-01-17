@@ -14,9 +14,14 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "firebase-admin": "^8.9.1",
     "firebase-functions": "^3.1.0",
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
+    "@types/request-promise": "^4.1.45",
+    "@types/jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.2.2"
   },
@@ -27,6 +32,7 @@
       "^.+\\.js$": "babel-jest",
       "^.+\\.ts$": "ts-jest"
     },
+    "testTimeout": 30000,
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
       "ts",
