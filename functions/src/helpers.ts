@@ -1,9 +1,4 @@
 var rp = require('request-promise');
-import * as functions from 'firebase-functions';
-
-
-const config = functions.config()
-
 
 // interface response_i1{
 //     error: string
@@ -16,8 +11,9 @@ const config = functions.config()
 // }
 // type response_t = response_i1|response_i2
 
-export const getAccessToken = async (code: string) => {
+export const getAccessToken = async (code: string, clientid: string, secret: string) => {
     // get token
+    console.log(code)
     const data = await rp({
         method: 'POST',
         json: true,
@@ -27,16 +23,29 @@ export const getAccessToken = async (code: string) => {
             code: code,
             redirect_uri: 'https://reddit-submatch.web.app/success'
         }
-    }).auth(config.reddit.clientid, config.reddit.secret)
-
+    }).auth(clientid, secret)
+    console.log(data)
     if (data.error){
         throw `Error: ${data.error}`
     } 
     return data['access_token']
 }
 
+
+const subredditWhiteListKeys = ["display_name", "user_is_banned", "subscribers", "user_is_contributor", "created_utc", "lang"]
+
+const filterKeys = (obj: any, keys: string[]) => {
+    const filtered: any = {}
+    keys.forEach(key => {
+      if (obj.hasOwnProperty(key)) {
+        filtered[key] = obj[key]
+      }
+    })
+    return filtered
+}
+
 export const formatSubreddits = (subreddits: any) => {
-    return subreddits
+    return subreddits.map((sub: any)=>filterKeys(sub.data, subredditWhiteListKeys))
 }
 
 export const formatUserInfo = (userInfo: any) => {
@@ -77,9 +86,8 @@ export const getSubredditInfo = async (accessToken: string, after?:string) => {
 }
 
 export const getSubreddits = async (accessToken: string) => {
-    let subreddits = []
     let response = await getSubredditInfo(accessToken) 
-    subreddits.push(response.data.children)
+    let subreddits = response.data.children
     while(response.data.after !== null){
         console.log(response.data.after)
         response = await getSubredditInfo(accessToken, response.data.after)

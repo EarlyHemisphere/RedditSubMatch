@@ -14,6 +14,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "firebase": "^7.7.0",
     "firebase-admin": "^8.9.1",
     "firebase-functions": "^3.1.0",
     "request": "^2.88.0",
