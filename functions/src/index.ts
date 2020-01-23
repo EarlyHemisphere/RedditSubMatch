@@ -1,10 +1,10 @@
 import * as functions from 'firebase-functions';
-import { getAccessToken, getSubreddits, formatSubreddits, getUserInfo, formatUserInfo } from './helpers';
+import { getAccessToken, /*getSubreddits, formatSubreddits,*/ getUserInfo } from './helpers';
 import * as admin from 'firebase-admin';
 
 
 
-admin.initializeApp() 
+admin.initializeApp()
 const firestore = admin.firestore()
 
 
@@ -16,48 +16,47 @@ interface submitUserLogin_i {
 exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i, context) => {
     return new Promise(async (res, rej) => {
         let accessToken
-        let subreddits
+        let refreshToken
+        // let subreddits
         let userInfo
         let USERNAME
 
+        console.log("GETTING ACCESS TOKEN AND REFRESH TOKEN")
         try {
-            console.log("GETTING ACCESS TOKEN")
-            accessToken = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret)
-        } catch(err){
-            console.error("FAILED GETTING ACCESS TOKEN", err)
+            ({ refresh_token: refreshToken, access_token: accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
+        } catch(err) {
+            console.error("FAILED GETTING ACCESS TOKEN AND REFRESH TOKEN", err)
             res({ ok: false, message: "error getting access token" })
             return
         }
         console.log(accessToken)
+        console.log(refreshToken)
+        console.log("GETTING USER INFO")
         try {
-            console.log("GETTING USER INFO")
-
             userInfo = await getUserInfo(accessToken)
-        } catch(err){
+        } catch(err) {
             console.error("FAILED GETTING USER INFO", err)
             res({ ok: false, message: "error getting user identity" })
             return
         }
-        // could check the db here in order to make sure the user hasn't done it twice
-        // althought I'm not sure if its that important 
-        try {
-            console.log("GETTING SUBREDDITS")
 
-            subreddits = await getSubreddits(accessToken)
-        } catch(err){
-            console.error("FAILED GETTING SUBREDDITS", err)
-            res({ ok: false, message: "error getting subreddits" })
-            return
-        }
-
+        // console.log("GETTING SUBREDDITS")
+        // try {
+        //     subreddits = await getSubreddits(accessToken)
+        // } catch(err) {
+        //     console.error("FAILED GETTING SUBREDDITS", err)
+        //     res({ ok: false, message: "error getting subreddits" })
+        //     return
+        // }
 
         USERNAME = userInfo.name
         console.log("ADDING TO FIRESTORE DB")
         // take the list of subreddits and add it to a database
         await firestore.collection("users").doc(USERNAME).set({
             timestamp: new Date().getTime(),
-            userInfo: formatUserInfo(userInfo),
-            subreddits: formatSubreddits(subreddits)
+            accessToken,
+            refreshToken,
+            //subreddits: formatSubreddits(subreddits)
         })
         
         res({ ok: true, message: "success" })

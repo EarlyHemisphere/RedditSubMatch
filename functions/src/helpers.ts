@@ -5,6 +5,7 @@ var rp = require('request-promise');
 // } 
 // interface response_i2{
 //     access_token: string
+//     refresh_token: string
 //     token_type: string
 //     expires_in: string
 //     scope: string
@@ -12,8 +13,6 @@ var rp = require('request-promise');
 // type response_t = response_i1|response_i2
 
 export const getAccessToken = async (code: string, clientid: string, secret: string) => {
-    // get token
-    console.log(code)
     const data = await rp({
         method: 'POST',
         json: true,
@@ -25,10 +24,10 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
         }
     }).auth(clientid, secret)
     console.log(data)
-    if (data.error){
+    if (data.error) {
         throw `Error: ${data.error}`
     } 
-    return data['access_token']
+    return { access_token: data['access_token'], refresh_token: data['refresh_token']}
 }
 
 
@@ -46,10 +45,6 @@ const filterKeys = (obj: any, keys: string[]) => {
 
 export const formatSubreddits = (subreddits: any) => {
     return subreddits.map((sub: any)=>filterKeys(sub.data, subredditWhiteListKeys))
-}
-
-export const formatUserInfo = (userInfo: any) => {
-    return userInfo
 }
 
 
@@ -88,7 +83,7 @@ export const getSubredditInfo = async (accessToken: string, after?:string) => {
 export const getSubreddits = async (accessToken: string) => {
     let response = await getSubredditInfo(accessToken) 
     let subreddits = response.data.children
-    while(response.data.after !== null){
+    while (response.data.after !== null) {
         console.log(response.data.after)
         response = await getSubredditInfo(accessToken, response.data.after)
         console.log(response.data.after)
