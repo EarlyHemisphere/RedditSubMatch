@@ -1,9 +1,8 @@
 import * as React from 'react';
 import * as style from './style.scss';
-import { firebaseFunctions, db } from 'app/firebase/base';
 import { generateRandomString } from 'app/helpers';
 
-const sizeof = require('sizeof')
+// const sizeof = require('sizeof')
 
 interface Props{
 }
@@ -13,7 +12,7 @@ interface State {
 const CLIENT_ID = "BRgd2M3wfJD7Vw"
 const CODE = 'code'
 const REDIRECT_URI = "https://reddit-submatch.web.app/success"
-const DURATION = "temporary"
+const DURATION = "permanent"
 const SCOPE = "mysubreddits%20identity"
 
 
