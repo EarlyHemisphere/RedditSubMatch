@@ -1,45 +1,39 @@
 import * as React from 'react';
 import * as style from './style.scss';
 import { generateRandomString } from 'app/helpers';
-
-// const sizeof = require('sizeof')
+import { Link } from 'react-router';
 
 interface Props{
 }
 interface State {
 }
 
-const CLIENT_ID = "BRgd2M3wfJD7Vw"
+const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
-const REDIRECT_URI = "https://reddit-submatch.web.app/success"
-const DURATION = "permanent"
-const SCOPE = "mysubreddits%20identity"
-
-
+const REDIRECT_URI = 'https://reddit-submatch.web.app/success'
+const SIGNUP_DURATION = 'permanent'
+const OPTOUT_DURATION = 'temporary'
+const SIGNUP_SCOPE = 'mysubreddits%20identity'
+const OPTOUT_SCOPE = 'identity'
 
 export class Home extends React.Component<Props, State> {
-
   constructor(props: Props, context: any) {
-    super(props, context);
-    // this.test()
-    this.state = {
-    };
+    super(props, context)
   }
-  getUrl = () => {
-    return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`
-  }
-  test = () => {
-    // db.collection("users").doc("theC4T").get().then((doc)=>{
-    //   console.log(doc.data())
-    //   console.log(doc)
-    //   console.log(sizeof.sizeof(doc.data(), true))
-    // })
-    // db.collection("users").add({test: "test"})
+  getUrl = (optOut: Boolean = false) => {
+    return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`
   }
   render() {
     return (
       <div className={style.home}>
-        <a href={this.getUrl()}> Click here to authenticate </a>
+        <Link to={{
+          pathname: this.getUrl(),
+          data: {}
+        }}> Click here to authenticate </Link>
+        <Link to={{
+          pathname: this.getUrl(true),
+          data: { optOut: true }
+        }}> Click here to opt out </Link>
       </div>
     );
   }
