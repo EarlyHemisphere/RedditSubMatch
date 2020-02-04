@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { getAccessToken, /*getSubreddits, formatSubreddits,*/ getUserInfo } from './helpers';
+import { getAccessToken, getUserInfo } from './helpers';
 import * as admin from 'firebase-admin';
 
 admin.initializeApp()
@@ -17,7 +17,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         let USERNAME
 
         console.log("ADDING USER TOKEN")
-        console.log("GETTING ACCESS TOKEN AND REFRESH TOKEN")
+        console.log("GETTING TOKEN(S)")
         try {
             ({ refreshToken, accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
         } catch(err) {
