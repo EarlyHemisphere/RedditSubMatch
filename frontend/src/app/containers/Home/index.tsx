@@ -3,13 +3,7 @@ import * as style from './style.scss';
 import { generateRandomString } from 'app/helpers';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Container, Grid, Typography } from '@material-ui/core';
-import { spacing } from '@material-ui/system';
 import 'typeface-roboto';
-
-interface Props{
-}
-interface State {
-}
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
@@ -21,23 +15,32 @@ const OPTOUT_SCOPE = 'identity'
 
 const useStyles = makeStyles({
   root: {
-    backgroundImage: 'linear-gradient(45deg, #FF8E53 20%, #FF4500 70%)',
+    backgroundImage: 'linear-gradient(45deg, #FF4500 30%, #FF7530 60%)',
     backgroundPosition: 'center center',
-    borderRadius: 3,
+    borderRadius: 15,
     border: 0,
     color: 'white',
-    height: 60,
-    width: 200,
+    height: 80,
+    width: 250,
     padding: '0 30',
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    boxShadow: '0 5px 5px 2px rgba(0, 0, 0, .1)',
     backgroundSize: '200% auto',
     transition: '0.5s',
     '&:hover': {
-      backgroundPosition: 'left top',
+      backgroundPosition: 'right top',
+      boxShadow: '0 8px 12px 8px rgba(0, 0, 0, .1)',
     }
   },
   label: {
-    fontSize: '25px',
+    fontSize: '24px',
+  },
+  noSelect: {
+    WebkitTouchCallout: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    MsUserSelect: 'none',
+    userSelect: 'none',
   }
 });
 
@@ -60,11 +63,11 @@ export default function home() {
         alignItems="center"
         justify="center"
         style={{ minHeight: '100vh' }}>
-        <Typography variant="h1" display="block" gutterBottom style={{ marginBottom: '10rem' }}>submatch</Typography>
+        <Typography variant="h1" display="block" gutterBottom style={{ marginBottom: '10rem' }} classes={{ root: styles.noSelect }}>submatch</Typography>
         <Button classes={{ root: styles.root, label: styles.label }} size="large">
           <a href={getUrl()} onClick={((e) => setLocalStorage())}> sign up </a>
         </Button>
-        <Typography variant="button" display="block" style={{ margin: '2rem 0' }}>or</Typography>
+        <Typography variant="button" display="block" style={{ margin: '2rem 0' }} classes={{ root: styles.noSelect }}>or</Typography>
         <Button variant="outlined" size="large">
           <a id='deleteUserInfo' href={getUrl(true)} onClick={((e) => setLocalStorage(true))}> opt out </a>
         </Button>

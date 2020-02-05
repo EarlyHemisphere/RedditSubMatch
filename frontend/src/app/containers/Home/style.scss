@@ -1,7 +1,7 @@
 .home {
   height: 100%;
   width: 100%;
-  background: url('../../../assets/background.jpg') no-repeat center center fixed;
+  background: linear-gradient( rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) ), url('../../../assets/background.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
