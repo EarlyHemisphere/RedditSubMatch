@@ -1,7 +1,14 @@
-.home{
+.home {
   height: 100%;
-  input[type=text]{
-    color: red;
-  }
+  width: 100%;
+  background: url('../../../assets/background.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 
+  a {
+  	text-decoration: none;
+  	color: inherit;
+  }
 }
