@@ -15,7 +15,7 @@ const OPTOUT_SCOPE = 'identity'
 
 const useStyles = makeStyles({
   root: {
-    backgroundImage: 'linear-gradient(45deg, #FF4500 30%, #FF7530 60%)',
+    backgroundImage: 'linear-gradient(45deg, #FF4500 30%, #FF7530 65%)',
     backgroundPosition: 'center center',
     borderRadius: 15,
     border: 0,
@@ -34,14 +34,6 @@ const useStyles = makeStyles({
   label: {
     fontSize: '24px',
   },
-  noSelect: {
-    WebkitTouchCallout: 'none',
-    WebkitUserSelect: 'none',
-    KhtmlUserSelect: 'none',
-    MozUserSelect: 'none',
-    MsUserSelect: 'none',
-    userSelect: 'none',
-  }
 });
 
 const getUrl = (optOut: Boolean = false) => {
@@ -52,7 +44,7 @@ const setLocalStorage = (optOut: Boolean = false) => {
   localStorage.setItem('optOut', optOut.toString())
 }
 
-export default function home() {
+export default function home(props) {
   const styles = useStyles();
 
   return (
@@ -63,14 +55,14 @@ export default function home() {
         alignItems="center"
         justify="center"
         style={{ minHeight: '100vh' }}>
-        <Typography variant="h1" display="block" gutterBottom style={{ marginBottom: '10rem' }} classes={{ root: styles.noSelect }}>submatch</Typography>
-        <Button classes={{ root: styles.root, label: styles.label }} size="large">
-          <a href={getUrl()} onClick={((e) => setLocalStorage())}> sign up </a>
-        </Button>
-        <Typography variant="button" display="block" style={{ margin: '2rem 0' }} classes={{ root: styles.noSelect }}>or</Typography>
-        <Button variant="outlined" size="large">
-          <a id='deleteUserInfo' href={getUrl(true)} onClick={((e) => setLocalStorage(true))}> opt out </a>
-        </Button>
+        <Typography variant="h1" display="block" classes={{ root: style.title }}>submatch</Typography>
+        <a href={getUrl()} onClick={((e) => setLocalStorage())}>
+          <Button classes={{ root: styles.root, label: styles.label }} size="large">sign up</Button>
+        </a>
+        <Typography variant="button" display="block" style={{ margin: '2rem 0' }} classes={{ root: style.text }}>or</Typography>
+        <a id='deleteUserInfo' href={getUrl(true)} onClick={((e) => setLocalStorage(true))}>
+          <Button variant="outlined" size="large">opt out</Button>
+        </a>
       </Grid>
     </Container>
   );
