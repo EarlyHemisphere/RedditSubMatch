@@ -7,7 +7,7 @@ import 'typeface-roboto';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
-const REDIRECT_URI = 'http://localhost:3000/success'
+const REDIRECT_URI = 'https://reddit-submatch.web.app/success'
 const SIGNUP_DURATION = 'permanent'
 const OPTOUT_DURATION = 'temporary'
 const SIGNUP_SCOPE = 'mysubreddits%20identity'
