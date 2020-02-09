@@ -5,12 +5,12 @@ import { firebaseFunctions } from 'app/firebase/base';
 import { Container, Grid, Typography } from '@material-ui/core';
 
 export default function success(props) {
-  const data = { code: qs.parse(props.location.search) }
+  const data = { code: qs.parse(props.location.search).code }
   const optOut = localStorage.getItem('optOut') == 'true'
-
+  
   if (optOut) {
-    const deleteUserLogin = firebaseFunctions.httpsCallable("deleteUserLogin")
-    deleteUserLogin(data);
+    const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
+    deleteUserInfo(data);
   } else {
     const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
     submitUserLogin(data);

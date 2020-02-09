@@ -10,6 +10,12 @@ var rp = require('request-promise');
 //     expires_in: string
 //     scope: string
 // }
+// interface response_i3{
+//     access_token: string
+//     token_type: string
+//     expires_in: string
+//     scope: string
+// }
 // type response_t = response_i1|response_i2
 
 export const getAccessToken = async (code: string, clientid: string, secret: string) => {
@@ -20,7 +26,7 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
         form: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'https://reddit-submatch.web.app/success'
+            redirect_uri: 'https://reddit-submatch.firebaseapp.com/success'
         }
     }).auth(clientid, secret)
     console.log(data)
