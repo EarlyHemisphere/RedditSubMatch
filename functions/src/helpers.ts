@@ -10,6 +10,12 @@ var rp = require('request-promise');
 //     expires_in: string
 //     scope: string
 // }
+// interface response_i3{
+//     access_token: string
+//     token_type: string
+//     expires_in: string
+//     scope: string
+// }
 // type response_t = response_i1|response_i2
 
 export const getAccessToken = async (code: string, clientid: string, secret: string) => {
@@ -20,33 +26,15 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
         form: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'https://reddit-submatch.web.app/success'
+            redirect_uri: 'https://reddit-submatch.firebaseapp.com/success'
         }
     }).auth(clientid, secret)
     console.log(data)
     if (data.error) {
         throw `Error: ${data.error}`
     } 
-    return { access_token: data['access_token'], refresh_token: data['refresh_token']}
+    return { accessToken: data['access_token'], refreshToken: data['refresh_token']}
 }
-
-
-const subredditWhiteListKeys = ["display_name", "user_is_banned", "subscribers", "user_is_contributor", "created_utc", "lang"]
-
-const filterKeys = (obj: any, keys: string[]) => {
-    const filtered: any = {}
-    keys.forEach(key => {
-      if (obj.hasOwnProperty(key)) {
-        filtered[key] = obj[key]
-      }
-    })
-    return filtered
-}
-
-export const formatSubreddits = (subreddits: any) => {
-    return subreddits.map((sub: any)=>filterKeys(sub.data, subredditWhiteListKeys))
-}
-
 
 export const getUserInfo = async (accessToken: string) => {
     let uri = `https://oauth.reddit.com/api/v1/me`
