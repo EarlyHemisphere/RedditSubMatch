@@ -68,3 +68,7 @@ node_modules/
 functions/secrets
 
 package-lock.json
+
+tests/*
+
+.runtimeconfig.json
