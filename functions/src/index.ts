@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { getAccessToken, getUserInfo } from './helpers';
+import { getAccessToken, getUserInfo, revokeRefreshToken, revokeTempAccessToken } from './helpers';
 import * as admin from 'firebase-admin';
 
 admin.initializeApp()
@@ -50,9 +50,10 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
 
 exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) => {
     return new Promise(async (res, rej) => {
-        let accessToken
+        let accessToken: string
+        let resp
         let userInfo
-        let USERNAME
+        let USERNAME: string
 
         console.log("DELETING USER INFO")
         console.log("GETTING ACCESS TOKEN")
@@ -75,9 +76,49 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         }
 
         USERNAME = userInfo.name
-        console.log("DELETING USER FROM FIRESTORE DB")
-        await firestore.collection("users").doc(USERNAME).delete()
-        
-        res({ ok: true, message: "success" })
+
+        console.log("GETTING USER CURRENT REFRESH TOKEN")
+        firestore.collection('users').doc(USERNAME).get()
+            .then(async (doc) => {
+                if (!doc.exists) {
+                    console.log('No such document!');
+                } else {
+                    let docData = doc.data()
+                    let refreshToken
+                    if (docData) {
+                        refreshToken = docData['refreshToken']
+                    } else {
+                        console.log('Error getting document data; data empty')
+                    }
+                    console.log(refreshToken)
+
+                    console.log("REVOKING PERMANENT REFRESH TOKEN")
+                    try {
+                        resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                    } catch(err) {
+                        console.error("FAILED REVOKING REFRESH TOKEN", err)
+                        res({ ok: false, message: "error revoking refresh token" })
+                        return
+                    }
+                    console.log(resp)
+
+                    console.log("REVOKING TEMP ACCESS TOKEN")
+                    try {
+                        resp = await revokeTempAccessToken(accessToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                    } catch(err) {
+                        console.error("FAILED REVOKING ACCESS TOKEN", err)
+                        res({ ok: false, message: "error revoking access token" })
+                        return
+                    }
+                    console.log(resp)
+
+                    console.log("DELETING USER FROM FIRESTORE DB")
+                    await firestore.collection("users").doc(USERNAME).delete()
+                    
+                    res({ ok: true, message: "success" })
+                }
+            }).catch(err => {
+              console.log('Error getting document', err);
+            });
     })
 })

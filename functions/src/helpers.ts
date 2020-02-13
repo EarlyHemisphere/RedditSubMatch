@@ -68,6 +68,45 @@ export const useRefreshToken = async (refreshToken: string, clientid: string, se
     return response.access_token
 }
 
+export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string) => {
+    let uri = 'https://www.reddit.com/api/v1/revoke_token'
+    console.log(uri)
+    let response = await rp({
+        uri: uri,
+        method: 'POST',
+        json: true,
+        headers: {
+            // Authorization: `Basic ${btoa(clientid + ":" + secret)}`,
+            'User-Agent': 'Submatch/0.1 by Submatch_bot'
+        },
+        form: {
+            token: refreshToken,
+            token_type_hint: 'refresh_token'
+        }
+    }).auth(clientid, secret)
+
+    return response;
+}
+
+export const revokeTempAccessToken = async(accessToken: string, clientid: string, secret: string) => {
+    let uri = 'https://www.reddit.com/api/v1/revoke_token'
+    console.log(uri)
+    let response = await rp({
+        uri: uri,
+        method: 'POST',
+        json: true,
+        headers: {
+            // Authorization: `Basic ${btoa(clientid + ":" + secret)}`,
+            'User-Agent': 'Submatch/0.1 by Submatch_bot'
+        },
+        form: {
+            token: accessToken,
+            token_type_hint: 'access_token'
+        }
+    }).auth(clientid, secret)
+
+    return response;
+}
 
 export const getSubredditInfo = async (accessToken: string, after?:string) => {
     let uri = `https://oauth.reddit.com/subreddits/mine/subscriber?limit=100`

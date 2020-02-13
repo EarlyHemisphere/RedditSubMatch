@@ -1,8 +1,6 @@
 import * as React from 'react';
-import * as style from './style.scss';
 import * as qs from 'query-string'
 import { firebaseFunctions } from 'app/firebase/base';
-import { Container, Grid, Typography } from '@material-ui/core';
 import Optout from './Optout';
 import Optin from './Optin';
 
