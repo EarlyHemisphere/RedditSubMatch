@@ -22,7 +22,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
             ({ refreshToken, accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN AND REFRESH TOKEN", err)
-            res({ ok: false, message: "error getting access token" })
+            res({ ok: false, message: "Access token retrieval failed" })
             return
         }
         console.log(accessToken)
@@ -33,7 +33,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
             console.error("FAILED GETTING USER INFO", err)
-            res({ ok: false, message: "error getting user identity" })
+            res({ ok: false, message: "Retrieval of user identity info failed" })
             return
         }
 
@@ -61,7 +61,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
             ({ accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN AND REFRESH TOKEN", err)
-            res({ ok: false, message: "error getting access token" })
+            res({ ok: false, message: "Access token retrieval failed" })
             return
         }
         console.log(accessToken)
@@ -71,7 +71,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
             console.error("FAILED GETTING USER INFO", err)
-            res({ ok: false, message: "error getting user identity" })
+            res({ ok: false, message: "Retrieval of user identity info failed" })
             return
         }
 
@@ -97,7 +97,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                         resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                     } catch(err) {
                         console.error("FAILED REVOKING REFRESH TOKEN", err)
-                        res({ ok: false, message: "error revoking refresh token" })
+                        res({ ok: false, message: "Revoking of refresh token failed" })
                         return
                     }
                     console.log(resp)
@@ -107,7 +107,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                         resp = await revokeTempAccessToken(accessToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                     } catch(err) {
                         console.error("FAILED REVOKING ACCESS TOKEN", err)
-                        res({ ok: false, message: "error revoking access token" })
+                        res({ ok: false, message: "Revoking of access token failed" })
                         return
                     }
                     console.log(resp)
