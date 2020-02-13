@@ -74,6 +74,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   optOut: {
     transition: 'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    width: 150,
+    height: 60,
     [theme.breakpoints.down('md')]: {
       height: 100,
       width: '100%',
