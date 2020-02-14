@@ -112,10 +112,10 @@ export default function home(props) {
             <Button classes={{ root: styles.signupBtn, label: styles.label }} size="large">sign up</Button>
           </Link>
           <Hidden mdDown>
-            <Typography variant="button" display="block" style={{ margin: '2rem 0' }} classes={{ root: styles.noSelect }}>or</Typography>
+            <Typography variant="button" display="block" style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
           </Hidden>
           <Link href={getUrl(true)} onClick={((e) => setLocalStorage(true))} underline="none" classes={{ root: styles.outerLink }}>
-            <Button variant="outlined" size="large" classes={{ root: styles.optOut }}>opt out</Button>
+            <Button variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
           </Link>
         </Grid>
       </Grid>
