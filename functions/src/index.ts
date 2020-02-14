@@ -90,35 +90,38 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                     } else {
                         console.log('Error getting document data; data empty')
                     }
+
                     console.log(refreshToken)
-
-                    console.log("REVOKING PERMANENT REFRESH TOKEN")
-                    try {
-                        resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
-                    } catch(err) {
-                        console.error("FAILED REVOKING REFRESH TOKEN", err)
-                        res({ ok: false, message: "Revoking of refresh token failed" })
-                        return
+                    if (refreshToken) {
+                        console.log("REVOKING PERMANENT REFRESH TOKEN")
+                        try {
+                            resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                        } catch(err) {
+                            console.error("FAILED REVOKING REFRESH TOKEN", err)
+                            res({ ok: false, message: "Revoking of refresh token failed" })
+                            return
+                        }
+                        console.log(resp)
                     }
-                    console.log(resp)
-
-                    console.log("REVOKING TEMP ACCESS TOKEN")
-                    try {
-                        resp = await revokeTempAccessToken(accessToken, functions.config().reddit.clientid, functions.config().reddit.secret)
-                    } catch(err) {
-                        console.error("FAILED REVOKING ACCESS TOKEN", err)
-                        res({ ok: false, message: "Revoking of access token failed" })
-                        return
-                    }
-                    console.log(resp)
-
-                    console.log("DELETING USER FROM FIRESTORE DB")
-                    await firestore.collection("users").doc(USERNAME).delete()
-                    
-                    res({ ok: true, message: "success" })
                 }
+                console.log("REVOKING TEMP ACCESS TOKEN")
+                try {
+                    resp = await revokeTempAccessToken(accessToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                } catch(err) {
+                    console.error("FAILED REVOKING ACCESS TOKEN", err)
+                    res({ ok: false, message: "Revoking of access token failed" })
+                    return
+                }
+                console.log(resp)
+
+                console.log("DELETING USER FROM FIRESTORE DB")
+                await firestore.collection("users").doc(USERNAME).delete()
+                
+                res({ ok: true, message: "success" })
             }).catch(err => {
-              console.log('Error getting document', err);
+              console.log('Error getting document', err)
+              res({ ok: false, message: 'failure'})
+              // TODO: remove line above and instead write to the firestore error collection
             });
     })
 })
