@@ -9,6 +9,7 @@ import { Error } from './Error';
 
 
 const renderSuccess = (loading, response, component) => {
+  localStorage.setItem('isBrowser', 'false')
   if(loading){
     return <Loading/>
   }
@@ -23,19 +24,25 @@ export const Success = (props) => {
   const [loading, setLoading] = React.useState(true);
   const [response, setResponse] = React.useState({})
   const optOut = localStorage.getItem('optOut') == 'true'
+  const isBrowser = localStorage.getItem('isBrowser') == 'true'
+
   if (optOut) {
-    const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
-    deleteUserInfo(data).then((r)=>{
-      setLoading(false)
-      setResponse(r)
-    });
+    if (isBrowser) {
+      const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
+      deleteUserInfo(data).then((r)=>{
+        setLoading(false)
+        setResponse(r)
+      });
+    }
     return renderSuccess(loading, response, <Optout/>)
   } else {
+    if (isBrowser) {
     const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
-    submitUserLogin(data).then(()=>{
-      setLoading(false)
-      setResponse(response)
-    });
+      submitUserLogin(data).then(()=>{
+        setLoading(false)
+        setResponse(response)
+      });
+    }
     return renderSuccess(loading, response, <Optin/>)
   }
 }

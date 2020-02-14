@@ -92,11 +92,13 @@ const getUrl = (optOut: Boolean = false) => {
 }
 
 const setLocalStorage = (optOut: Boolean = false) => {
+  localStorage.setItem('isBrowser', 'true')
   localStorage.setItem('optOut', optOut.toString())
 }
 
 export default function home(props) {
   const styles = useStyles();
+  localStorage.setItem('isBrowser', 'false')
 
   return (
     <Container maxWidth={false} classes={{ root: style.home }}>
