@@ -50,7 +50,7 @@ export const getUserInfo = async (accessToken: string) => {
     return response
 }
 
-export const useRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
+export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
     let uri = `https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=${refreshToken}`
     console.log(uri)
     let response = await rp({
@@ -62,10 +62,8 @@ export const useRefreshToken = async (refreshToken: string, clientid: string, se
         },
         json: true,
     }).auth(clientid, secret)
-    if (response.error === 400) {
-        throw `Error: ${response.message}`
-    } 
-    return response.access_token
+
+    return response['access_token']
 }
 
 export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string) => {
