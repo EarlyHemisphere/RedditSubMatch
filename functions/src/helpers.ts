@@ -51,16 +51,17 @@ export const getUserInfo = async (accessToken: string) => {
 }
 
 export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
-    let uri = `https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=${refreshToken}`
-    console.log(uri)
     let response = await rp({
-        uri: uri,
         method: 'POST',
+        json: true,
+        uri: 'https://www.reddit.com/api/v1/access_token',
         headers: {
-            // Authorization: `Basic ${btoa(clientid + ":" + secret)}`,
             'User-Agent': 'Submatch/0.1 by Submatch_bot'
         },
-        json: true,
+        body: {
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken
+        }
     }).auth(clientid, secret)
 
     return response['access_token']

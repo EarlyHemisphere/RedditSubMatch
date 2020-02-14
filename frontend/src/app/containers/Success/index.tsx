@@ -31,16 +31,16 @@ export const Success = (props) => {
       const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
       deleteUserInfo(data).then((r)=>{
         setLoading(false)
-        setResponse(r)
+        setResponse(r.data)
       });
     }
     return renderSuccess(loading, response, <Optout/>)
   } else {
     if (isBrowser) {
     const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
-      submitUserLogin(data).then(()=>{
+      submitUserLogin(data).then((r)=>{
         setLoading(false)
-        setResponse(response)
+        setResponse(r.data)
       });
     }
     return renderSuccess(loading, response, <Optin/>)

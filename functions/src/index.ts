@@ -12,7 +12,7 @@ interface submitUserLogin_i {
 exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i) => {
     return new Promise(async (res, rej) => {
         let accessToken
-        let testAccessToken
+        let testAccessToken: string
         let refreshToken: string
         let userInfo
         let USERNAME: string
@@ -54,7 +54,13 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             console.log('Error getting document refresh token; no refresh token')
                         } else {
                             console.log('Current refresh token: ' + currentRefreshToken)
-                            testAccessToken = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                            try {
+                                testAccessToken = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                            } catch(err) {
+                                console.error("FAILED TO TEST REFRESH TOKEN", err)
+                                res({ ok: false, message: "Reddit API request failed" })
+                                return
+                            }
                             if (!testAccessToken) {
                                 console.log('Current refresh token is invalid, will write to db')
                             } else {
@@ -82,7 +88,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                 })
                 res({ ok: true, message: "success" })
             }).catch(err => {
-              console.log('Error getting user document', err)
+              console.error('Error getting user document', err)
               res({ ok: false, message: 'failure'})
               // TODO: remove line above and instead write to the firestore error collection
             });
