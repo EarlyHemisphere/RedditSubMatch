@@ -19,6 +19,7 @@ var rp = require('request-promise');
 // type response_t = response_i1|response_i2
 
 export const getAccessToken = async (code: string, clientid: string, secret: string) => {
+    console.log(code)
     const data = await rp({
         method: 'POST',
         json: true,
@@ -34,6 +35,7 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
 }
 
 export const getUserInfo = async (accessToken: string) => {
+    console.log(accessToken)
     let uri = `https://oauth.reddit.com/api/v1/me`
     let response = await rp({
         uri: uri,
@@ -48,6 +50,7 @@ export const getUserInfo = async (accessToken: string) => {
 }
 
 export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
+    console.log(refreshToken)
     let response = await rp({
         method: 'POST',
         json: true,
@@ -65,10 +68,9 @@ export const testRefreshToken = async (refreshToken: string, clientid: string, s
 }
 
 export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string) => {
-    let uri = 'https://www.reddit.com/api/v1/revoke_token'
-    console.log(uri)
+    console.log(refreshToken)
     let response = await rp({
-        uri: uri,
+        uri: 'https://www.reddit.com/api/v1/revoke_token',
         method: 'POST',
         json: true,
         headers: {
@@ -85,10 +87,9 @@ export const revokeRefreshToken = async(refreshToken: string, clientid: string, 
 }
 
 export const revokeTempAccessToken = async(accessToken: string, clientid: string, secret: string) => {
-    let uri = 'https://www.reddit.com/api/v1/revoke_token'
-    console.log(uri)
+    console.log(accessToken)
     let response = await rp({
-        uri: uri,
+        uri: 'https://www.reddit.com/api/v1/revoke_token',
         method: 'POST',
         json: true,
         headers: {

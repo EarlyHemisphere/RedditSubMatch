@@ -28,14 +28,20 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         }
         console.log(accessToken)
         console.log(refreshToken)
+        if (!accessToken && !refreshToken) {
+            console.error("ACCESS TOKEN AND REFRESH TOKEN ARE UNDEFINED")
+            res({ ok: false, message: "User token retrieval failed" })
+            return
+        }
 
         console.log("GETTING USERNAME")
         try {
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
             console.error("[Submit] FAILED GETTING USER INFO", err)
-            await firestore.collection("unnamed tokens").doc(refreshToken).set({
-                    error: err['error']['error']
+            await firestore.collection("unnamed tokens").doc(new Date().getTime().toString()).set({
+                    error: err['error']['error'],
+                    refreshToken
                 })
             res({ ok: true, message: "success" })
             return
@@ -43,6 +49,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         console.log(userInfo)
 
         USERNAME = userInfo.name
+        console.log(USERNAME)
 
         firestore.collection('users').doc(USERNAME).get()
             .then(async (doc) => {
