@@ -15,7 +15,7 @@ export const Error = ({response}) => {
                 <Grid
                 	direction="row"
                 	alignItems="flex-start"
-                	justify="flex-start"
+                	justify="center"
                 	style={{ height: '200px', width: '40%'}}>
                 	<Typography variant="h4" display="block">API Error:</Typography>
                 	<Typography variant="h5" display="block" style={{ marginBottom: 100, fontFamily: "Lucida Console"}}>{response.message}</Typography>

@@ -51,7 +51,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                     if (docData) {
                         currentRefreshToken = docData['refreshToken']
                         if (!currentRefreshToken) {
-                            console.log('Error getting document refresh token; no refresh token')
+                            console.log('Cannot retrieve document refresh token; no refresh token')
                         } else {
                             console.log('Current refresh token: ' + currentRefreshToken)
                             try {
@@ -69,7 +69,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                                     resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                                 } catch(err) {
                                     console.error("FAILED REVOKING REFRESH TOKEN", err)
-                                    res({ ok: false, message: "Revoking of refresh token failed" })
+                                    res({ ok: false, message: "Revoking of temp refresh token failed" })
                                     return
                                 }
                                 console.log(resp)
@@ -78,7 +78,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             }
                         }
                     } else {
-                        console.log('Error getting document data; data empty')
+                        console.log('Cannot retrieve document data; data empty')
                     }
                 }
                 console.log("ADDING TO FIRESTORE DB")
@@ -128,7 +128,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         firestore.collection('users').doc(USERNAME).get()
             .then(async (doc) => {
                 if (!doc.exists) {
-                    console.log('No such document!')
+                    console.log('Cannot retrieve document; no such document')
                 } else {
                     let docData = doc.data()
                     let refreshToken
@@ -140,8 +140,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                             console.log(refreshToken)
                         }
                     } else {
-                        console.log('Error getting document data; data empty')
-                        // possibly write to firestore error collection
+                        console.log('Cannot retrieve document data; data empty')
                     }
 
                     if (refreshToken) {

@@ -26,7 +26,7 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
         form: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'https://reddit-submatch.firebaseapp.com/success'
+            redirect_uri: 'https://reddit-submatch.firebaseapp.com/redirect'
         }
     }).auth(clientid, secret)
     console.log(data)

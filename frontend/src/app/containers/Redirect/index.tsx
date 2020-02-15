@@ -6,8 +6,6 @@ import Optin from './Optin';
 import { Loading } from './Loading';
 import { Error } from './Error';
 
-
-
 const renderSuccess = (loading, response, component) => {
   localStorage.setItem('isBrowser', 'false')
   if(loading){
@@ -19,7 +17,7 @@ const renderSuccess = (loading, response, component) => {
   return component
 }
 
-export const Success = (props) => {
+export const Redirect = (props) => {
   const data = { code: qs.parse(props.location.search).code }
   const [loading, setLoading] = React.useState(true);
   const [response, setResponse] = React.useState({})
@@ -28,16 +26,20 @@ export const Success = (props) => {
 
   if (optOut) {
     if (isBrowser) {
-      const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
-      deleteUserInfo(data).then((r)=>{
-        setLoading(false)
-        setResponse(r.data)
-      });
+      let i = 0
+      while (i < 100) {
+        const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
+        deleteUserInfo(data).then((r)=>{
+          setLoading(false)
+          setResponse(r.data)
+        });
+        i += 1
+      }
     }
     return renderSuccess(loading, response, <Optout/>)
   } else {
     if (isBrowser) {
-    const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
+      const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
       submitUserLogin(data).then((r)=>{
         setLoading(false)
         setResponse(r.data)
