@@ -26,8 +26,12 @@
 
 .title {
   @include noSelect;
-  margin-top: 5rem !important; /* todo: get rid of !important */
-  margin-bottom: 15rem !important; /* todo: get rid of !important */
+  margin-top: 10vh !important; /* todo: get rid of !important */
+  margin-bottom: 20vh !important; /* todo: get rid of !important */
+  font-family: 'Montserrat', sans-serif !important; /* todo: get rid of !important */
+}
+
+.titleFont {
   font-family: 'Montserrat', sans-serif !important; /* todo: get rid of !important */
 }
 

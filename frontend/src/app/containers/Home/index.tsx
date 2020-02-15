@@ -49,9 +49,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     userSelect: 'none',
   },
   title: {
-    marginBottom: '10rem',
+    marginBottom: '20vh',
     [theme.breakpoints.down('md')]: {
-      marginTop: '14.4rem',
+      marginTop: '13vh',
     }
   },
   parentGrid: {
