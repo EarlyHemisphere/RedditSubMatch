@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as style from '../style.scss';
-import { Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid, Typography, Hidden, Link, IconButton } from '@material-ui/core';
+import { GitHub, Reddit } from '@material-ui/icons';
 
 export default function Optin(props) {
 
@@ -18,6 +19,20 @@ export default function Optin(props) {
                 <Typography variant="h5" display="block" gutterBottom classes={{ root: style.text }}>For more info or if you have any questions or concerns,</Typography>
                 <Typography variant="h5" display="block" gutterBottom classes={{ root: style.text }}>
                     head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
+                <Hidden mdDown>
+                    <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
+                        <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
+                            <IconButton>
+                                <GitHub fontSize="large" />
+                            </IconButton>
+                        </Link>
+                        <Link href='https://www.reddit.com/r/submatch'>
+                            <IconButton>
+                                <Reddit color="secondary" fontSize="large" />
+                            </IconButton>
+                        </Link>
+                    </Grid>
+                </Hidden>
             </Grid>
         </Container>
     );

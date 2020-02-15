@@ -34,3 +34,12 @@
 .text {
 	@include noSelect;
 }
+
+.bottomButtons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 5rem;
+  margin-left: 20px;
+}

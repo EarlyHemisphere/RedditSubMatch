@@ -86,14 +86,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginBottom: 0,
     },
   },
-  bottomButtons: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: 'auto',
-    height: '5rem',
-    marginLeft: '20px'
-  }
 }));
 
 const getUrl = (optOut: Boolean = false) => {
@@ -129,7 +121,7 @@ export default function home(props) {
             <Button variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
           </Link>
           <Hidden mdDown>
-            <Grid classes={{ root: styles.bottomButtons }} direction="row" alignItems="center" justify="center">
+            <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
               <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
                 <IconButton>
                   <GitHub fontSize="large" />
