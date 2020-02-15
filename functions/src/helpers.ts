@@ -27,12 +27,9 @@ export const getAccessToken = async (code: string, clientid: string, secret: str
             grant_type: 'authorization_code',
             code: code,
             redirect_uri: 'https://reddit-submatch.firebaseapp.com/redirect'
-        }
+        },
     }).auth(clientid, secret)
     console.log(data)
-    if (data.error) {
-        throw `Error: ${data.error}`
-    } 
     return { accessToken: data['access_token'], refreshToken: data['refresh_token']}
 }
 
@@ -44,7 +41,7 @@ export const getUserInfo = async (accessToken: string) => {
         headers: {
             Authorization: `bearer ${accessToken}`,
             'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        }
+        },
     })
 
     return response

@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as style from './style.scss';
 import { generateRandomString } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { Button, Container, Grid, Typography, Hidden, Link } from '@material-ui/core';
+import { Button, Container, Grid, Typography, Hidden, Link, IconButton } from '@material-ui/core';
 import 'typeface-roboto';
+import { GitHub, Reddit } from '@material-ui/icons';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
@@ -84,6 +85,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       border: '3px solid',
       marginBottom: 0,
     },
+  },
+  bottomButtons: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 'auto',
+    height: '5rem',
+    marginLeft: '20px'
   }
 }));
 
@@ -119,6 +128,20 @@ export default function home(props) {
           <Link href={getUrl(true)} onClick={((e) => setLocalStorage(true))} underline="none" classes={{ root: styles.outerLink }}>
             <Button variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
           </Link>
+          <Hidden mdDown>
+            <Grid classes={{ root: styles.bottomButtons }} direction="row" alignItems="center" justify="center">
+              <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
+                <IconButton>
+                  <GitHub fontSize="large" />
+                </IconButton>
+              </Link>
+              <Link href='https://www.reddit.com/r/submatch'>
+                <IconButton>
+                  <Reddit color="secondary" fontSize="large" />
+                </IconButton>
+              </Link>
+            </Grid>
+          </Hidden>
         </Grid>
       </Grid>
     </Container>

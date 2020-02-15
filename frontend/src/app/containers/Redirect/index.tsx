@@ -6,6 +6,8 @@ import Optin from './Optin';
 import { Loading } from './Loading';
 import { Error } from './Error';
 
+
+
 const renderSuccess = (loading, response, component) => {
   localStorage.setItem('isBrowser', 'false')
   if(loading){
@@ -26,15 +28,11 @@ export const Redirect = (props) => {
 
   if (optOut) {
     if (isBrowser) {
-      let i = 0
-      while (i < 100) {
-        const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
-        deleteUserInfo(data).then((r)=>{
-          setLoading(false)
-          setResponse(r.data)
-        });
-        i += 1
-      }
+      const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
+      deleteUserInfo(data).then((r)=>{
+        setLoading(false)
+        setResponse(r.data)
+      });
     }
     return renderSuccess(loading, response, <Optout/>)
   } else {

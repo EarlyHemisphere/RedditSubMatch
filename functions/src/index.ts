@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { getAccessToken, getUserInfo, revokeRefreshToken, testRefreshToken } from './helpers';
+import { getAccessToken, getUserInfo, revokeRefreshToken } from './helpers';
 import * as admin from 'firebase-admin';
 
 admin.initializeApp()
@@ -12,7 +12,6 @@ interface submitUserLogin_i {
 exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i) => {
     return new Promise(async (res, rej) => {
         let accessToken
-        let testAccessToken: string
         let refreshToken: string
         let userInfo
         let USERNAME: string
@@ -24,7 +23,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
             ({ refreshToken, accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN AND REFRESH TOKEN", err)
-            res({ ok: false, message: "Access token retrieval failed" })
+            res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error })
             return
         }
         console.log(accessToken)
@@ -34,10 +33,15 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         try {
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
-            console.error("FAILED GETTING USER INFO", err)
-            res({ ok: false, message: "Retrieval of user identity info failed" })
+            console.error("[Submit] FAILED GETTING USER INFO", err)
+            await firestore.collection("unnamed tokens").doc(new Date().getTime().toString()).set({
+                    refreshToken,
+                    error: err['error']['error']
+                })
+            res({ ok: true, message: "success" })
             return
         }
+        console.log(userInfo)
 
         USERNAME = userInfo.name
 
@@ -54,28 +58,15 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             console.log('Cannot retrieve document refresh token; no refresh token')
                         } else {
                             console.log('Current refresh token: ' + currentRefreshToken)
+                            console.log('REVOKING CURRENT REFRESH TOKEN')
                             try {
-                                testAccessToken = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                                resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                             } catch(err) {
-                                console.error("FAILED TO TEST REFRESH TOKEN", err)
-                                res({ ok: false, message: "Reddit API request failed" })
+                                console.error("FAILED REVOKING CURRENT REFRESH TOKEN", err)
+                                res({ ok: false, message: "Revoking of current refresh token failed. Error code: " + err.error.error })
                                 return
                             }
-                            if (!testAccessToken) {
-                                console.log('Current refresh token is invalid, will write to db')
-                            } else {
-                                console.log('Current refresh token is valid. Revoking new refresh token')
-                                try {
-                                    resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
-                                } catch(err) {
-                                    console.error("FAILED REVOKING REFRESH TOKEN", err)
-                                    res({ ok: false, message: "Revoking of temp refresh token failed" })
-                                    return
-                                }
-                                console.log(resp)
-                                res({ ok: true, message: 'success'})
-                                return
-                            }
+                            console.log(resp)
                         }
                     } else {
                         console.log('Cannot retrieve document data; data empty')
@@ -88,9 +79,8 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                 })
                 res({ ok: true, message: "success" })
             }).catch(err => {
-              console.error('Error getting user document', err)
-              res({ ok: false, message: 'failure'})
-              // TODO: remove line above and instead write to the firestore error collection
+              console.error('Submit: Error getting user document', err)
+              res({ ok: false, message: 'db read failure'})
             });
     })
 })
@@ -108,7 +98,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
             ({ accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret))
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN", err)
-            res({ ok: false, message: "Access token retrieval failed" })
+            res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error })
             return
         }
         console.log(accessToken)
@@ -117,8 +107,8 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         try {
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
-            console.error("FAILED GETTING USER INFO", err)
-            res({ ok: false, message: "Retrieval of user identity info failed" })
+            console.error("[Delete] FAILED GETTING USER INFO", err)
+            res({ ok: false, message: "Retrieval of user identity info failed. Error code: " + err.error.error })
             return
         }
 
@@ -129,6 +119,9 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
             .then(async (doc) => {
                 if (!doc.exists) {
                     console.log('Cannot retrieve document; no such document')
+                    await firestore.collection("empty deletes").doc(USERNAME).set({
+                        timestamp: new Date().getTime(),
+                    })
                 } else {
                     let docData = doc.data()
                     let refreshToken
@@ -149,7 +142,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                             resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                         } catch(err) {
                             console.error("FAILED REVOKING REFRESH TOKEN", err)
-                            res({ ok: false, message: "Revoking of refresh token failed" })
+                            res({ ok: false, message: "Revoking of refresh token failed. Error code: " + err.error.error })
                             return
                         }
                         console.log(resp)
@@ -157,13 +150,12 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
 
                     console.log("DELETING USER FROM FIRESTORE DB")
                     await firestore.collection("users").doc(USERNAME).delete()
-                
-                    res({ ok: true, message: "success" })
                 }
+
+                res({ ok: true, message: "success" })
             }).catch(err => {
-              console.log('Error getting document', err)
-              res({ ok: false, message: 'failure'})
-              // TODO: remove line above and instead write to the firestore error collection
+              console.error('Delete: Error getting user document', err)
+              res({ ok: false, message: 'db read failure'})
             });
     })
 })
