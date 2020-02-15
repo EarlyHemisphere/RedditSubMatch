@@ -8,7 +8,7 @@ import { GitHub, Reddit } from '@material-ui/icons';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
-const REDIRECT_URI = 'https://reddit-submatch.firebaseapp.com/redirect'
+const REDIRECT_URI = 'https://redditsubmatch.com/redirect'
 const SIGNUP_DURATION = 'permanent'
 const OPTOUT_DURATION = 'temporary'
 const SIGNUP_SCOPE = 'mysubreddits%20identity'

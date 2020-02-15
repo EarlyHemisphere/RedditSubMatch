@@ -1,8 +1,8 @@
 {
-  "name": "typescript_react_mobx_firebase_quickstart",
+  "name": "Reddit Submatch",
   "version": "1.0.0",
   "private": true,
-  "description": "Typescript React Mobx Firebase Quick Start",
+  "description": "Reddit Submatch",
   "main": "index.js",
   "scripts": {
     "test": "jest",
