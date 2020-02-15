@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   label: {
     fontSize: '24px',
+    color: 'white'
   },
   noSelect: {
     WebkitTouchCallout: 'none',
@@ -66,11 +67,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       width: '95%',
       position: 'absolute',
       bottom: 30,
-    },
-  },
-  outerLink: {
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
     },
   },
   optOut: {
@@ -111,15 +107,11 @@ export default function home(props) {
         classes={{ root: styles.parentGrid }}>
         <Typography variant="h1" display="block" className={`${style.title} ${styles.noSelect} ${styles.title}`}>submatch</Typography>
         <Grid classes={{ root: styles.outerGrid }} container spacing={0} direction="column" alignItems="center" justify="center">
-          <Link href={getUrl()} onClick={((e) => setLocalStorage())} underline="none" classes={{ root: styles.outerLink }}>
-            <Button classes={{ root: styles.signupBtn, label: styles.label }} size="large">sign up</Button>
-          </Link>
+          <Button href={getUrl()} onClick={((e) => setLocalStorage())} classes={{ root: styles.signupBtn, label: styles.label }} size="large">sign up</Button>
           <Hidden mdDown>
             <Typography variant="button" display="block" style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
           </Hidden>
-          <Link href={getUrl(true)} onClick={((e) => setLocalStorage(true))} underline="none" classes={{ root: styles.outerLink }}>
-            <Button variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
-          </Link>
+          <Button href={getUrl(true)} onClick={((e) => setLocalStorage(true))} variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
           <Hidden mdDown>
             <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
               <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>

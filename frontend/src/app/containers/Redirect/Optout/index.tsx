@@ -17,7 +17,7 @@ export default function Optout(props) {
                 <Typography variant="h4" display="block" gutterBottom classes={{ root: style.text }}>
                     You have been <b style={{ color: '#29a329' }}>removed</b> from matching
                 </Typography>
-                <Typography variant="h5" display="block" classes={{ root: style.text }} style={{ marginBottom: '4rem' }}>and your data has been deleted.</Typography>
+                <Typography variant="h5" display="block" classes={{ root: style.text }} style={{ marginBottom: '4rem' }}>and any data you've given us has been deleted.</Typography>
                 <Hidden mdDown>
                     <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
                         <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>

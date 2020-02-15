@@ -34,8 +34,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
             userInfo = await getUserInfo(accessToken)
         } catch(err) {
             console.error("[Submit] FAILED GETTING USER INFO", err)
-            await firestore.collection("unnamed tokens").doc(new Date().getTime().toString()).set({
-                    refreshToken,
+            await firestore.collection("unnamed tokens").doc(refreshToken).set({
                     error: err['error']['error']
                 })
             res({ ok: true, message: "success" })
