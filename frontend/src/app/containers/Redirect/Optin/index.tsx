@@ -20,6 +20,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             fontSize: '3rem',
         }
     },
+    text2: {
+        fontSize: '2rem',
+        marginBottom: '3rem',
+        [theme.breakpoints.down('md')]: {
+            fontSize: '2.7rem',
+        }
+    },
     success: {
         fontSize: '3rem',
         marginBottom: '6rem',
@@ -48,7 +55,7 @@ export default function Optin(props) {
                 <Typography display="block" className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
                 <Typography display="block" className={`${styles.success} ${styles.noSelect}`}><b>Success!</b></Typography>
                 <Typography display="block" align="center" className={`${styles.text} ${styles.noSelect}`}>You are now participating in regular matching!</Typography>
-                <Typography display="block" align="center" gutterBottom className={`${styles.text} ${styles.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
+                <Typography display="block" align="center" gutterBottom className={`${styles.text2} ${styles.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
                 <Hidden mdDown>
                     <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
                         <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
