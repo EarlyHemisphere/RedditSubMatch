@@ -109,6 +109,11 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         }
         console.log(accessToken)
 
+        if (!accessToken) {
+            console.error("ACCESS TOKEN IS UNDEFINED")
+            res({ ok: false, message: "User token retrieval failed" })
+            return
+        }
         console.log("GETTING USERNAME")
         try {
             userInfo = await getUserInfo(accessToken)
