@@ -170,3 +170,16 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
             });
     })
 })
+
+exports.documentWriteListener = functions.firestore.document('users/{documentUid}').onWrite((change, context) => {
+    return new Promise(async (res, rej) => {
+        if (!change.before.exists) {
+            console.log("INCREMENTING SIGNUP COUNTER")
+            await firestore.collection('db_info').doc('counters').update({signup_count: admin.firestore.FieldValue.increment(1)})
+        } else if (!change.after.exists) {
+            console.log("DECREMENTING SIGNUP COUNTER")
+            await firestore.collection('db_info').doc('counters').update({signup_count: admin.firestore.FieldValue.increment(-1)})
+        }
+        res({ ok: true })
+    })
+})
