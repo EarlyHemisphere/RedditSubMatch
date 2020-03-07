@@ -1,8 +1,6 @@
 from google.cloud import firestore
 import google.cloud.exceptions
 import json
-import requests
-import praw
 
 # Script should be run in a terminal with env var
 # GOOGLE_APPLICATION_CREDENTIALS set to the path of the file
