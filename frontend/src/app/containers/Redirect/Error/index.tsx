@@ -51,7 +51,7 @@ export const Error = ({response}) => {
                 	justify="center"
                 	style={{ height: '200px'}}>
                 	<Typography align="center" className={`${styles.text} ${styles.noSelect}`} display="block">API Error:</Typography>
-                	<Typography align="center" className={`${styles.text} ${styles.error}`} display="block">response.message</Typography>
+                	<Typography align="center" className={`${styles.text} ${styles.error}`} display="block">{response.message}</Typography>
                 	<Typography align="center" className={`${styles.text} ${styles.noSelect}`} display="block">Please try again later.</Typography>
                     <Hidden mdDown>
                         <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">

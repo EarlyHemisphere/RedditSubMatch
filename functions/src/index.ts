@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { getAccessToken, getUserInfo, revokeRefreshToken } from './helpers';
+import { getAccessToken, getUserInfo, revokeRefreshToken, testRefreshToken } from './helpers';
 import * as admin from 'firebase-admin';
 
 admin.initializeApp()
@@ -15,7 +15,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         let refreshToken: string
         let userInfo
         let USERNAME: string
-        let resp
+        let resp: any
 
         console.log("ADDING USER TOKEN")
         console.log("GETTING TOKEN(S)")
@@ -64,15 +64,41 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             console.log('Cannot retrieve document refresh token; no refresh token')
                         } else {
                             console.log('Current refresh token: ' + currentRefreshToken)
-                            console.log('REVOKING CURRENT REFRESH TOKEN')
+                            console.log('CHECKING IF CURRENT REFRESH TOKEN IS VALID')
+                            let test_access_token
                             try {
-                                resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
-                            } catch(err) {
-                                console.error("FAILED REVOKING CURRENT REFRESH TOKEN", err)
-                                res({ ok: false, message: "Revoking of current refresh token failed. Error code: " + err.error.error })
+                                test_access_token = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                            } catch (err) {
+                                console.error('FAILED TO TEST CURRENT REFRESH TOKEN')
+                                res({ ok: false, message: "Failed to test current refresh token: Error code: " + err.error.error })
                                 return
                             }
-                            console.log(resp)
+                            console.log(test_access_token)
+                            if (!test_access_token) {
+                                console.log('SAVED REFRESH TOKEN IS INVALID, REVOKING')
+                                try {
+                                    resp = await revokeRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                                } catch(err) {
+                                    console.error("FAILED REVOKING SAVED REFRESH TOKEN", err)
+                                    res({ ok: false, message: "Revoking of saved refresh token failed. Error code: " + err.error.error })
+                                    return
+                                }
+                                console.log(resp)
+                                console.log("OVERWRITING SAVED REFRESH TOKEN")
+                                await firestore.collection("users").doc(USERNAME).set({
+                                    timestamp: new Date().getTime(),
+                                    refreshToken,
+                                })
+                            } else {
+                                console.log('REVOKING CURRENT REFRESH TOKEN')
+                                try {
+                                    resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
+                                } catch(err) {
+                                    console.error("FAILED REVOKING CURRENT REFRESH TOKEN", err)
+                                    res({ ok: false, message: "Revoking of current refresh token failed. Error code: " + err.error.error })
+                                    return
+                                }
+                            }
                         }
                     } else {
                         console.log('Cannot retrieve document data; data empty')
