@@ -63,7 +63,7 @@ export const testRefreshToken = async (refreshToken: string, clientid: string, s
         }
     }).auth(clientid, secret)
     
-    return response['access_token']
+    return response
 }
 
 export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string) => {
