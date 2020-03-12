@@ -50,7 +50,6 @@ export const getUserInfo = async (accessToken: string) => {
 }
 
 export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
-    console.log(refreshToken)
     let response = await rp({
         method: 'POST',
         json: true,
@@ -58,12 +57,12 @@ export const testRefreshToken = async (refreshToken: string, clientid: string, s
         headers: {
             'User-Agent': 'Submatch/0.1 by Submatch_bot'
         },
-        body: {
+        form: {
             grant_type: 'refresh_token',
             refresh_token: refreshToken
         }
     }).auth(clientid, secret)
-
+    
     return response['access_token']
 }
 
