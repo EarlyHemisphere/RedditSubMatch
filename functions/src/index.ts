@@ -68,9 +68,14 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             try {
                                 resp = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret)
                             } catch (err) {
-                                console.error('FAILED TO TEST CURRENT REFRESH TOKEN', err)
-                                res({ ok: false, message: "Failed to test current refresh token: Error code: " + err.error.error })
-                                return
+                                if (err.error.error != 400) {
+                                    console.error('FAILED TO TEST CURRENT REFRESH TOKEN', err)
+                                    res({ ok: false, message: "Failed to test current refresh token: Error code: " + err.error.error })
+                                    return
+                                } else {
+                                    console.log(err)
+                                    console.log('Received bad request error when testing current refresh token')
+                                }
                             }
                             console.log(resp)
                             if (!resp['access_token']) {
