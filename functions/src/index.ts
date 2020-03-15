@@ -75,6 +75,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                                 } else {
                                     console.log(err)
                                     console.log('Received bad request error when testing current refresh token')
+                                    resp = { access_token: null }
                                 }
                             }
                             console.log(resp)
@@ -102,6 +103,8 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                                     res({ ok: false, message: "Revoking of current refresh token failed. Error code: " + err.error.error })
                                     return
                                 }
+                                res({ ok: true, message: "success" })
+                                return
                             }
                         }
                     } else {
@@ -114,9 +117,11 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                     refreshToken,
                 })
                 res({ ok: true, message: "success" })
+                return
             }).catch(err => {
               console.error('Submit: Error getting user document', err)
               res({ ok: false, message: 'db read failure'})
+              return
             });
     })
 })
