@@ -4,6 +4,7 @@ import * as admin from 'firebase-admin';
 
 admin.initializeApp()
 const firestore = admin.firestore()
+const database = admin.database()
 
 interface submitUserLogin_i {
     code: string
@@ -210,10 +211,14 @@ exports.documentWriteListener = functions.firestore.document('users/{documentUid
     return new Promise(async (res, rej) => {
         if (!change.before.exists) {
             console.log("INCREMENTING SIGNUP COUNTER")
-            await firestore.collection('db_info').doc('counters').update({signup_count: admin.firestore.FieldValue.increment(1)})
+            database.ref("signup_count").transaction(function (current_value: any) {
+                return (current_value || 0) + 1;
+            });
         } else if (!change.after.exists) {
             console.log("DECREMENTING SIGNUP COUNTER")
-            await firestore.collection('db_info').doc('counters').update({signup_count: admin.firestore.FieldValue.increment(-1)})
+            database.ref("signup_count").transaction(function (current_value: any) {
+                return (current_value || 0) - 1;
+            });
         }
         res({ ok: true })
     })
