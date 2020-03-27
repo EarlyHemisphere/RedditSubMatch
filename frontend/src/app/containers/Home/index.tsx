@@ -2,9 +2,11 @@ import * as React from 'react';
 import * as style from './style.scss';
 import { generateRandomString } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { Button, Container, Grid, Typography, Hidden, Link, IconButton } from '@material-ui/core';
+import { Button, Container, Grid, Typography, Hidden, Link, IconButton, CircularProgress } from '@material-ui/core';
 import 'typeface-roboto';
 import { GitHub, Reddit } from '@material-ui/icons';
+import { db } from 'app/firebase/base';
+import Async from 'react-async';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw'
 const CODE = 'code'
@@ -49,9 +51,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     userSelect: 'none',
   },
   title: {
-    marginBottom: '20vh',
+    marginBottom: '5vh',
     [theme.breakpoints.down('md')]: {
-      marginTop: '13vh',
+      marginTop: '15vh',
     }
   },
   parentGrid: {
@@ -82,6 +84,27 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginBottom: 0,
     },
   },
+  signupCount: {
+    marginBottom: '18vh',
+    fontSize: '24px',
+    position: 'relative',
+    [theme.breakpoints.down('md')]: {
+      marginBottom: '30vh',
+      fontSize: '40px',
+    }
+  },
+  circularProgress: {
+    marginLeft: '10px',
+    marginRight: '20px',
+    width: '17px !important',
+    height: '17px !important',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: '10px',
+      marginRight: '38px',
+      width: '30px !important',
+      height: '30px !important',
+    }
+  }
 }));
 
 const getUrl = (optOut: Boolean = false) => {
@@ -91,6 +114,10 @@ const getUrl = (optOut: Boolean = false) => {
 const setLocalStorage = (optOut: Boolean = false) => {
   localStorage.setItem('isBrowser', 'true')
   localStorage.setItem('optOut', optOut.toString())
+}
+
+const getSignupCount = async () => {
+  return await db.ref('signup_count').once('value')
 }
 
 export default function home(props) {
@@ -107,6 +134,23 @@ export default function home(props) {
         classes={{ root: styles.parentGrid }}>
         <Typography variant="h1" display="block" className={`${style.title} ${styles.noSelect} ${styles.title}`}>submatch</Typography>
         <Grid classes={{ root: styles.outerGrid }} container spacing={0} direction="column" alignItems="center" justify="center">
+          <Async promiseFn={getSignupCount}>
+            <Async.Loading>
+              <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
+            </Async.Loading>
+            <Async.Rejected>
+              { () => {
+                  return <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: could not fetch</Typography>
+                }
+              }
+            </Async.Rejected>
+            <Async.Fulfilled>
+              { (snapshot:any) => {
+                  return <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: <b>{snapshot.val()}</b></Typography>
+                }
+              }
+            </Async.Fulfilled>
+          </Async>
           <Button href={getUrl()} onClick={((e) => setLocalStorage())} classes={{ root: styles.signupBtn, label: styles.label }} size="large">sign up</Button>
           <Hidden mdDown>
             <Typography variant="button" display="block" style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
