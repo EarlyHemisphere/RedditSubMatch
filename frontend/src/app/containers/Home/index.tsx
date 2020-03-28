@@ -136,17 +136,17 @@ export default function home(props) {
         <Grid classes={{ root: styles.outerGrid }} container spacing={0} direction="column" alignItems="center" justify="center">
           <Async promiseFn={getSignupCount}>
             <Async.Loading>
-              <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
+              <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
             </Async.Loading>
             <Async.Rejected>
               { () => {
-                  return <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: could not fetch</Typography>
+                  return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: could not fetch</Typography>
                 }
               }
             </Async.Rejected>
             <Async.Fulfilled>
               { (snapshot:any) => {
-                  return <Typography display="block" variant="overline" classes={{ root: styles.signupCount }}>signup count: <b>{snapshot.val()}</b></Typography>
+                  return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <b>{snapshot.val()}</b></Typography>
                 }
               }
             </Async.Fulfilled>
