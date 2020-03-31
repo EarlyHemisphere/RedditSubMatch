@@ -6,6 +6,7 @@ from google.cloud import storage
 from pathlib import Path
 import google.cloud.exceptions
 import praw
+from praw.exceptions import APIException
 import json
 import numpy as np
 import copy
@@ -68,9 +69,17 @@ def get_user_subscriptions():
         i += 1
 
     logger.info(f'Number of failed user info retrieval attempts: {str(errors)}')
+    logger.debug(empty_users)
 
+    # dump in case something goes wrong
     with open('subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
+    f.close()
+    with open('users.json', 'w', encoding='utf-8') as f:
+        json.dump({ 'users': users }, f, ensure_ascii=False, indent=4)
+    f.close()
+    with open('/output/subs.json', 'w', encoding='utf-8') as f:
+        json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
     f.close()
 
     return users, empty_users, subs
@@ -165,6 +174,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
                     refresh_token=Config.script_refresh_token)
     messageSubject = f'Submatch Matching Round {round_number} Results'
     messageFooter = '-----\n\n^I ^do ^not ^reply ^to ^messages ^| ^[Code](https://github.com/LucasAnderson07/RedditSubMatch) ^| ^Problems ^with ^your ^match ^or ^have ^questions? ^[Message](https://www.reddit.com/message/compose/?to=r/submatch) ^the ^mods'
+    deleted_matches = []
 
     print('messaging empty users...')
     for user in empty_users:
@@ -172,7 +182,12 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += 'Unfortunately, you were not matched this round because you currently aren\'t subscribed to any subreddits!\n\n'
         message += 'If you would like to participate in the next round of matching, please subscribe to subreddits that align with your interests.\n\n'
         message += messageFooter
-        submatch_bot.redditor(user).message(messageSubject, message)
+        try:
+            submatch_bot.redditor(user).message(messageSubject, message)
+        except APIException as e:
+            logger.info(f'user {user} is now an invalid account')
+            logger.info(e['error_type'])
+            logger.info(e)
         logger.info(f'messaged empty user {user}')
 
     print('messaging unmatched users...')
@@ -182,7 +197,12 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += 'However, every round of matching always prioritizes unmatched users from the round before, so you are sure to get a match next round!\n\n'
         message += 'Also, chances of getting a better match can always be increased by subscribing to more subreddits that align with your interests.\n\n'
         message += messageFooter
-        submatch_bot.redditor(user).message(messageSubject, message)
+        try:
+            submatch_bot.redditor(user).message(messageSubject, message)
+        except APIException as e:
+            logger.info(f'user {user} is now an invalid account')
+            logger.info(e['error_type'])
+            logger.info(e)
         logger.info(f'messaged unmatched user {user}')
 
     print('messaging matched users...')
@@ -200,9 +220,17 @@ def message_users(matches, unmatched_users, empty_users, round_number):
                 i += 1
             message += f'\nWanna send u/{user2} a message? [Click this link!](https://www.reddit.com/message/compose/?to={user2})\n\n'
             message += messageFooter
-            submatch_bot.redditor(user1).message(messageSubject, message)
+            try:
+                submatch_bot.redditor(user1).message(messageSubject, message)
+            except APIException as e:
+                logger.error(f'user {user1} has a match but their account has been suspended')
+                logger.error(e['error_type'])
+                logger.info(e)
+                deleted_matches.append(user2)
             logger.info(f'messaged matched user {user1} about match with {user2}')
             user1, user2 = user2, user1
+
+    return deleted_matches
 
 def count_meaningless_matches(matches, users, subs):
     count = 0
@@ -251,6 +279,15 @@ def main():
     except FileNotFoundError:
         previous_unmatched_users = set()
 
+    # with open('users.json', 'r') as f:
+    #     users = json.load(f)['users']
+    # f.close()
+    # with open('subs.json', 'r') as f:
+    #     subs = json.load(f)['subs']
+    # f.close()
+    # with open('empty_users.json', 'r') as f:
+    #     empty_users = json.load(f)['users']
+    # f.close()
 
     logger.info('getting user subscriptions...')
     users, empty_users, subs = get_user_subscriptions()
@@ -310,10 +347,11 @@ def main():
     logger.info('uploaded files')
 
     logger.info('messaging users...')
-    message_users(matches, unmatched_users, empty_users, round_number)
+    deleted_matches = message_users(matches, unmatched_users, empty_users, round_number)
 
     print('done!')
     logger.info('done!')
+    logger.info(f'users with deleted matches: {deleted_matches}')
 
     logger.debug('matching statistics:')
     logger.debug(f'{len(matches)} out of {len(users)} users')
