@@ -172,7 +172,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += 'Unfortunately, you were not matched this round because you currently aren\'t subscribed to any subreddits!\n\n'
         message += 'If you would like to participate in the next round of matching, please subscribe to subreddits that align with your interests.\n\n'
         message += messageFooter
-        submatch_bot.redditor('EarlyHemisphere').message(messageSubject, message)
+        submatch_bot.redditor(user).message(messageSubject, message)
         logger.info(f'messaged empty user {user}')
 
     print('messaging unmatched users...')
@@ -182,7 +182,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += 'However, every round of matching always prioritizes unmatched users from the round before, so you are sure to get a match next round!\n\n'
         message += 'Also, chances of getting a better match can always be increased by subscribing to more subreddits that align with your interests.\n\n'
         message += messageFooter
-        submatch_bot.redditor('EarlyHemisphere').message(messageSubject, message)
+        submatch_bot.redditor(user).message(messageSubject, message)
         logger.info(f'messaged unmatched user {user}')
 
     print('messaging matched users...')
@@ -200,7 +200,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
                 i += 1
             message += f'\nWanna send u/{user2} a message? [Click this link!](https://www.reddit.com/message/compose/?to={user2})\n\n'
             message += messageFooter
-            submatch_bot.redditor('EarlyHemisphere').message(messageSubject, message)
+            submatch_bot.redditor(user1).message(messageSubject, message)
             logger.info(f'messaged matched user {user1} about match with {user2}')
             user1, user2 = user2, user1
 
