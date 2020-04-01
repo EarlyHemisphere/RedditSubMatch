@@ -25,11 +25,9 @@ def get_user_subscriptions():
     
     with open('nsfw_subs.json', 'r') as f:
         nsfw_subs = set(json.load(f)['subs'])
-    f.close()
     
     with open('db.json') as f:
         db_entries = json.load(f)
-    f.close()
     
     n = len(db_entries)
     
@@ -74,13 +72,12 @@ def get_user_subscriptions():
     # dump in case something goes wrong
     with open('subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
-    f.close()
+
     with open('users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'users': users }, f, ensure_ascii=False, indent=4)
-    f.close()
+
     with open('/output/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
-    f.close()
 
     return users, empty_users, subs
 
@@ -263,7 +260,6 @@ def main():
             for match in matches:
                 forbidden_matches.add((match[0], match[1]))
                 logger.debug(f'added forbidden match {match[0]} and {match[1]}')
-        f.close()
 
         # Get the previous match's unmatched users to prioritize
         if i == round_number - 1:
@@ -275,19 +271,17 @@ def main():
     try:
         with open('previous_unmatched_users.json') as f:
             previous_unmatched_users = set(json.load(f)['users'])
-        f.close()
     except FileNotFoundError:
         previous_unmatched_users = set()
 
     # with open('users.json', 'r') as f:
     #     users = json.load(f)['users']
-    # f.close()
+    #
     # with open('subs.json', 'r') as f:
     #     subs = json.load(f)['subs']
-    # f.close()
+    #
     # with open('empty_users.json', 'r') as f:
     #     empty_users = json.load(f)['users']
-    # f.close()
 
     logger.info('getting user subscriptions...')
     users, empty_users, subs = get_user_subscriptions()
@@ -322,16 +316,16 @@ def main():
     Path("/output").mkdir(parents=True, exist_ok=True)
     with open('/output/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
-    f.close()
+
     with open('/output/unmatched_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'users': unmatched_users }, f, ensure_ascii=False, indent=4)
-    f.close()
+
     with open('/output/matches.json', 'w', encoding='utf-8') as f:
         json.dump({ 'matches': matches }, f, ensure_ascii=False, indent=4)
-    f.close()
+
     with open('/output/empty_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
-    f.close()
+    
     logger.info('created files')
 
     blob = bucket.blob(f'match{round_number}_db.json')
