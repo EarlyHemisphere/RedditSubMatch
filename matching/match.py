@@ -220,7 +220,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
             try:
                 submatch_bot.redditor(user1).message(messageSubject, message)
             except APIException as e:
-                logger.error(f'user {user1} has a match but their account has been suspended')
+                logger.error(f'user {user1} has a match but their account is invalid')
                 logger.error(e['error_type'])
                 logger.info(e)
                 deleted_matches.append(user2)
@@ -281,7 +281,7 @@ def main():
     #     subs = json.load(f)['subs']
     #
     # with open('empty_users.json', 'r') as f:
-    #     empty_users = json.load(f)['users']
+    #     empty_users = json.load(f)
 
     logger.info('getting user subscriptions...')
     users, empty_users, subs = get_user_subscriptions()
@@ -316,16 +316,13 @@ def main():
     Path("/output").mkdir(parents=True, exist_ok=True)
     with open('/output/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
-
     with open('/output/unmatched_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'users': unmatched_users }, f, ensure_ascii=False, indent=4)
-
     with open('/output/matches.json', 'w', encoding='utf-8') as f:
         json.dump({ 'matches': matches }, f, ensure_ascii=False, indent=4)
-
     with open('/output/empty_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
-    
+
     logger.info('created files')
 
     blob = bucket.blob(f'match{round_number}_db.json')
