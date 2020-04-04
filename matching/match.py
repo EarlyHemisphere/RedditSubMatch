@@ -46,6 +46,10 @@ def get_user_subscriptions():
         user_subs = []
         
         try:
+            # suspended users cannot be messaged, and therefore cannot take part in matching
+            if reddit_user.user.me().is_suspended:
+                continue
+
             subreddit_subscriptions = list(reddit_user.user.subreddits(limit=None))
 
             if len(subreddit_subscriptions) == 0:
@@ -62,6 +66,7 @@ def get_user_subscriptions():
                 logger.debug(user_subs)
         except Exception as e:
             print(e)
+            print(db_entry['name'])
             errors += 1
     
         i += 1
