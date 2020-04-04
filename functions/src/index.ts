@@ -160,6 +160,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         }
 
         USERNAME = userInfo.name
+        console.log(USERNAME)
 
         console.log("GETTING USER CURRENT REFRESH TOKEN")
         firestore.collection('users').doc(USERNAME).get()
