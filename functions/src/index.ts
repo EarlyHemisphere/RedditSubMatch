@@ -224,3 +224,94 @@ exports.documentWriteListener = functions.firestore.document('users/{documentUid
         res({ ok: true })
     })
 })
+
+exports.getTokenAndBlacklist = functions.https.onCall(async (data) => {
+    return new Promise(async (res, rej) => {
+        let accessToken: string
+        let userInfo: any
+
+        try {
+            ({ accessToken } = await getAccessToken(data['code'], functions.config().reddit.clientid, functions.config().reddit.secret))
+        } catch(err) {
+            console.error("FAILED GETTING ACCESS TOKEN", err)
+            res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error })
+            return
+        }
+
+        if (!accessToken) {
+            console.error("ACCESS TOKEN IS UNDEFINED")
+            res({ ok: false, message: "User token retrieval failed" })
+            return
+        }
+
+        console.log("GETTING USERNAME")
+        try {
+            userInfo = await getUserInfo(accessToken)
+        } catch(err) {
+            console.error("FAILED GETTING USER INFO", err)
+            res({ ok: false, message: "Retrieval of user identity info failed. Error code: " + err.error.error })
+            return
+        }
+        let USERNAME = userInfo.name
+        console.log(USERNAME)
+        let blacklist: string[] = []
+
+        console.log("GETTING BLACKLIST FROM FIRESTORE")
+        firestore.collection('blacklists').doc(USERNAME).get()
+            .then(async (doc) => {
+                if (!doc.exists) {
+                    console.log("USER HAS NO BLACKLIST ENTRY. RETURNING EMPTY")
+                } else {
+                    let docData = doc.data()
+                    if (docData) {
+                        console.log("RETURNING EXISTING BLACKLIST")
+                        blacklist = docData['blacklist']
+                        console.log(blacklist)
+                    } else {
+                        console.log("USER HAS EMPTY BLACKLIST. RETURNING EMPTY")
+                    }
+                }
+                res({ ok: true, accessToken: accessToken, username: userInfo.name, blacklist: blacklist })
+                return
+            }).catch(err => {
+                console.error('Error getting user document', err)
+                res({ ok: false, message: 'db read failure'})
+                return
+            });
+    })
+})
+
+exports.saveBlacklist = functions.https.onCall(async (data) => {
+    return new Promise(async (res, rej) => {
+        const accessToken = data['accessToken']
+        const newBlacklist = data['blacklist'][0]
+        let userInfo
+        console.log(newBlacklist)
+
+        if (!accessToken) {
+            console.error("ACCESS TOKEN IS UNDEFINED")
+            res({ ok: false, message: "Problem with sent data: accessToken" })
+            return
+        }
+        console.log(accessToken)
+
+        console.log("GETTING USERNAME")
+        try {
+            userInfo = await getUserInfo(accessToken)
+        } catch(err) {
+            console.error("FAILED GETTING USER INFO", err)
+            res({ ok: false, message: "Access code sent was invalid. Has your session lasted longer than an hour? " + err.error.error })
+            return
+        }
+        let USERNAME = userInfo.name
+        console.log(USERNAME)
+
+        console.log("WRITING BLACKLIST TO DB")
+        await firestore.collection("blacklists").doc(USERNAME).set({
+            timestamp: new Date().getTime(),
+            blacklist: newBlacklist,
+        })
+        res({ ok: true, message: "success" })
+        return
+    })
+})

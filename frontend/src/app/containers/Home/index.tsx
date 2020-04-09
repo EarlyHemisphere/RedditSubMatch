@@ -114,6 +114,7 @@ const getUrl = (optOut: Boolean = false) => {
 const setLocalStorage = (optOut: Boolean = false) => {
   localStorage.setItem('isBrowser', 'true')
   localStorage.setItem('optOut', optOut.toString())
+  window.sessionStorage.setItem('blacklist', 'false')
 }
 
 const getSignupCount = async () => {

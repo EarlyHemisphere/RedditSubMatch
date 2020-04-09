@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+.normal {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient( rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) ), url('../../../assets/background.png') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+@mixin noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.title {
+  @include noSelect;
+  margin-top: 10vh !important; /* todo: get rid of !important */
+  margin-bottom: 20vh !important; /* todo: get rid of !important */
+  font-family: 'Montserrat', sans-serif !important; /* todo: get rid of !important */
+}
+
+.titleFont {
+  font-family: 'Montserrat', sans-serif !important; /* todo: get rid of !important */
+}
+
+.text {
+  @include noSelect;
+}
+
+.bottomButtons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 5rem;
+  margin-left: 20px;
+}
