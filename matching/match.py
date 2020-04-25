@@ -146,7 +146,7 @@ def match_users(users, subs, prioritization_queue, forbidden_matches, max_subscr
             b = users[j]
             common = get_common(a, b, subs)
             h = total_entropy(common, max_subscribers)
-            if h >= min_entropy and (users[i]['name'], users[j]['name']) not in forbidden_matches and (users[j]['name'], users[i]['name']) not in forbidden_matches:
+            if h >= min_entropy and (users[i]['name'].lower(), users[j]['name'].lower()) not in forbidden_matches and (users[j]['name'].lower(), users[i]['name'].lower()) not in forbidden_matches:
                 candidate_matches.append([h, common, i, j])
                 user_candidate_matches[i].append([h, i, j])
                 user_candidate_matches[j].append([h, i, j])
