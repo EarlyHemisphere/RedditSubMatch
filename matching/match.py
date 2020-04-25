@@ -288,9 +288,17 @@ def main():
     except FileNotFoundError:
         pass
 
-    logger.debug("FORBIDDEN MATCHES:")
+    with open(f'blacklists.json', 'r') as f:
+        logger.info(f'loading blacklists...')
+        blacklists = json.load(f)
+        for blacklist in blacklists:
+            for user in blacklist['blacklist']:
+                forbidden_matches.add((blacklist['name'].lower(), user.lower()))
+                logger.debug(f'added blacklisted match {blacklist["name"]} and {user} to forbidden matches')
+
+    logger.debug("FORBIDDEN MATCHES: " + str(len(forbidden_matches)))
     logger.debug(forbidden_matches)
-    logger.debug("PREVIOUS UNMATCHED USERS:")
+    logger.debug("PREVIOUS UNMATCHED USERS: " + str(len(previous_unmatched_users)))
     logger.debug(previous_unmatched_users)
 
     if round_number > 1 and not previous_unmatched_users:
