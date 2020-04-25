@@ -11,6 +11,7 @@ import json
 import numpy as np
 import copy
 import sys
+import os
 import Config
 from logger import log
 
@@ -43,6 +44,7 @@ def get_user_subscriptions():
                          client_secret=Config.webapp_client_secret,
                          refresh_token=refresh_token,
                          user_agent=Config.user_agent)
+
         user_subs = []
         
         try:
@@ -75,13 +77,14 @@ def get_user_subscriptions():
     logger.debug(empty_users)
 
     # dump in case something goes wrong
-    with open('subs.json', 'w', encoding='utf-8') as f:
+    cur_dir = os.getcwd()
+    with open(f'{cur_dir}/dump/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
 
-    with open('users.json', 'w', encoding='utf-8') as f:
+    with open(f'{cur_dir}/dump/users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'users': users }, f, ensure_ascii=False, indent=4)
 
-    with open('/output/subs.json', 'w', encoding='utf-8') as f:
+    with open(f'{cur_dir}/dump/empty_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
 
     return users, empty_users, subs
@@ -251,41 +254,55 @@ def main():
     round_number = Config.round_number
     storage_client = storage.Client()
     bucket = storage_client.bucket(Config.bucket_name)
+    cur_dir = os.getcwd()
 
     print('downloading data from previous matches...')
     logger.info('downloading data from previous matches...')
+
+    Path(f'{cur_dir}/previous').mkdir(parents=True, exist_ok=True)
     for i in range(1, round_number):
         logger.info(f'downloading data for matching round {i}')
         blob = bucket.blob(f'match{i}_matches.json')
-        blob.download_to_filename(f'match{i}_matches.json')
+        blob.download_to_filename(f'{cur_dir}/previous/match{i}_matches.json')
         logger.info(f'downloaded data matching round {i}')
 
-        with open('match{i}_matches.json') as f:
+        with open(f'{cur_dir}/previous/match{i}_matches.json') as f:
             matches = json.load(f)['matches']
             for match in matches:
-                forbidden_matches.add((match[0], match[1]))
+                forbidden_matches.add((match[0].lower(), match[1].lower()))
                 logger.debug(f'added forbidden match {match[0]} and {match[1]}')
 
         # Get the previous match's unmatched users to prioritize
         if i == round_number - 1:
             logger.info(f'downloading matching round {i} unmatched users')
             blob = bucket.blob(f'match{i}_unmatched_users.json')
-            blob.download_to_filename('previous_unmatched_users.json')
+            blob.download_to_filename(f'{cur_dir}/previous/previous_unmatched_users.json')
             logger.info(f'downloaded matching round {i} unmatched users')
 
+    previous_unmatched_users = set()
     try:
-        with open('previous_unmatched_users.json') as f:
-            previous_unmatched_users = set(json.load(f)['users'])
+        with open(f'{cur_dir}/previous/previous_unmatched_users.json') as f:
+            unmatched_usernames = json.load(f)['users']
+            for user in unmatched_usernames:
+                previous_unmatched_users.add(user.lower())
     except FileNotFoundError:
-        previous_unmatched_users = set()
+        pass
 
-    # with open('users.json', 'r') as f:
+    logger.debug("FORBIDDEN MATCHES:")
+    logger.debug(forbidden_matches)
+    logger.debug("PREVIOUS UNMATCHED USERS:")
+    logger.debug(previous_unmatched_users)
+
+    if round_number > 1 and not previous_unmatched_users:
+        raise Exception('previous unmatched user retrieval failed')
+
+    # with open(f'{cur_dir}/dump/users.json', 'r') as f:
     #     users = json.load(f)['users']
     #
-    # with open('subs.json', 'r') as f:
+    # with open(f'{cur_dir}/dump/subs.json', 'r') as f:
     #     subs = json.load(f)['subs']
     #
-    # with open('empty_users.json', 'r') as f:
+    # with open(f'{cur_dir}/dump/empty_users.json', 'r') as f:
     #     empty_users = json.load(f)
 
     logger.info('getting user subscriptions...')
