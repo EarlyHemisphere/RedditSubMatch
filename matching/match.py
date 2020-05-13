@@ -21,7 +21,7 @@ def get_user_subscriptions():
     users = []
     empty_users = []
     subs = {}
-    errors = 0
+    erroredUsers = []
     i = 1
     
     with open('nsfw_subs.json', 'r') as f:
@@ -69,15 +69,17 @@ def get_user_subscriptions():
         except Exception as e:
             print(e)
             print(db_entry['name'])
-            errors += 1
+            erroredUsers.append(db_entry['name'])
     
         i += 1
 
-    logger.info(f'Number of failed user info retrieval attempts: {str(errors)}')
+    logger.info(f'Number of failed user info retrieval attempts: {len(erroredUsers)}')
+    logger.debug(erroredUsers)
     logger.debug(empty_users)
 
-    # dump in case something goes wrong
+    # dump in case something goes wrong during matching
     cur_dir = os.getcwd()
+    Path(f'{cur_dir}/dump').mkdir(parents=True, exist_ok=True)
     with open(f'{cur_dir}/dump/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
 
@@ -306,12 +308,12 @@ def main():
 
     # with open(f'{cur_dir}/dump/users.json', 'r') as f:
     #     users = json.load(f)['users']
-    #
+    
     # with open(f'{cur_dir}/dump/subs.json', 'r') as f:
     #     subs = json.load(f)['subs']
-    #
+    
     # with open(f'{cur_dir}/dump/empty_users.json', 'r') as f:
-    #     empty_users = json.load(f)
+    #     empty_users = json.load(f)['empty_users']
 
     logger.info('getting user subscriptions...')
     users, empty_users, subs = get_user_subscriptions()
@@ -343,28 +345,27 @@ def main():
     print('matching complete. writing to local storage...')
     logger.info('matching complete. writing to local storage...')
 
-    Path("/output").mkdir(parents=True, exist_ok=True)
-    with open('/output/subs.json', 'w', encoding='utf-8') as f:
+    Path(f'{cur_dir}/output').mkdir(parents=True, exist_ok=True)
+    with open(f'{cur_dir}/output/subs.json', 'w', encoding='utf-8') as f:
         json.dump({ 'subs': subs }, f, ensure_ascii=False, indent=4)
-    with open('/output/unmatched_users.json', 'w', encoding='utf-8') as f:
+    with open(f'{cur_dir}/output/unmatched_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'users': unmatched_users }, f, ensure_ascii=False, indent=4)
-    with open('/output/matches.json', 'w', encoding='utf-8') as f:
+    with open(f'{cur_dir}/output/matches.json', 'w', encoding='utf-8') as f:
         json.dump({ 'matches': matches }, f, ensure_ascii=False, indent=4)
-    with open('/output/empty_users.json', 'w', encoding='utf-8') as f:
+    with open(f'{cur_dir}/output/empty_users.json', 'w', encoding='utf-8') as f:
         json.dump({ 'empty_users': empty_users }, f, ensure_ascii=False, indent=4)
-
     logger.info('created files')
 
     blob = bucket.blob(f'match{round_number}_db.json')
     blob.upload_from_filename('db.json')
     blob = bucket.blob(f'match{round_number}_subs.json')
-    blob.upload_from_filename('subs.json')
+    blob.upload_from_filename(f'{cur_dir}/output/subs.json')
     blob = bucket.blob(f'match{round_number}_matches.json')
-    blob.upload_from_filename('/output/matches.json')
+    blob.upload_from_filename(f'{cur_dir}/output/matches.json')
     blob = bucket.blob(f'match{round_number}_unmatched_users.json')
-    blob.upload_from_filename('/output/unmatched_users.json')
+    blob.upload_from_filename(f'{cur_dir}/output/unmatched_users.json')
     blob = bucket.blob(f'match{round_number}_empty_users.json')
-    blob.upload_from_filename('/output/empty_users.json')
+    blob.upload_from_filename(f'{cur_dir}/output/empty_users.json')
     logger.info('uploaded files')
 
     logger.info('messaging users...')
