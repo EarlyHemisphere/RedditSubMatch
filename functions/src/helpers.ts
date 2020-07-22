@@ -1,134 +1,53 @@
-var rp = require('request-promise');
+import axios from 'axios'
+import querystring from 'querystring';
 
-// interface response_i1{
+// interface response_i1 {
 //     error: string
-// } 
-// interface response_i2{
-//     access_token: string
-//     refresh_token: string
-//     token_type: string
-//     expires_in: string
-//     scope: string
 // }
-// interface response_i3{
-//     access_token: string
-//     token_type: string
-//     expires_in: string
-//     scope: string
-// }
-// type response_t = response_i1|response_i2
 
-export const getAccessToken = async (code: string, clientid: string, secret: string) => {
-    console.log(code)
-    const data = await rp({
-        method: 'POST',
-        json: true,
-        uri: 'https://www.reddit.com/api/v1/access_token',
-        form: {
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: 'https://redditsubmatch.com/redirect'
-        },
-    }).auth(clientid, secret)
-    console.log(data)
-    return { accessToken: data['access_token'], refreshToken: data['refresh_token']}
+export const getAccessToken = async(code: string, clientid: string, secret: string): Promise<any> => {
+    console.log(code);
+    const data = querystring.stringify({
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: 'https://redditsubmatch.com/redirect'
+    });
+    const response = await axios.post('https://www.reddit.com/api/v1/access_token', data, { auth: { username: clientid, password: secret }});
+    console.log(JSON.stringify(response.data));
+    return { accessToken: response.data['access_token'], refreshToken: response.data['refresh_token']};
 }
 
-export const getUserInfo = async (accessToken: string) => {
-    console.log(accessToken)
-    let uri = `https://oauth.reddit.com/api/v1/me`
-    let response = await rp({
-        uri: uri,
-        json: true,
-        headers: {
-            Authorization: `bearer ${accessToken}`,
-            'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        },
-    })
-
-    return response
+export const getUserInfo = async (accessToken: string): Promise<any> => {
+    console.log(accessToken);
+    const headers = {
+        Authorization: `bearer ${accessToken}`,
+        'User-Agent': 'Submatch/0.1 by Submatch_bot'
+    }
+    const response = await axios.get('https://oauth.reddit.com/api/v1/me', { headers });
+    return response.data;
 }
 
-export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string) => {
-    let response = await rp({
-        method: 'POST',
-        json: true,
-        uri: 'https://www.reddit.com/api/v1/access_token',
-        headers: {
-            'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        },
-        form: {
-            grant_type: 'refresh_token',
-            refresh_token: refreshToken
-        }
-    }).auth(clientid, secret)
-    
-    return response
+export const testRefreshToken = async (refreshToken: string, clientid: string, secret: string): Promise<any> => {
+    const data = querystring.stringify({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+    });
+    const headers = {
+        'User-Agent': 'Submatch/0.1 by Submatch_bot'
+    }
+    const response = await axios.post('https://www.reddit.com/api/v1/access_token', data, { headers, auth: { username: clientid, password: secret } });
+    return response.data;
 }
 
-export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string) => {
+export const revokeRefreshToken = async(refreshToken: string, clientid: string, secret: string): Promise<any> => {
     console.log(refreshToken)
-    let response = await rp({
-        uri: 'https://www.reddit.com/api/v1/revoke_token',
-        method: 'POST',
-        json: true,
-        headers: {
-            // Authorization: `Basic ${btoa(clientid + ":" + secret)}`,
-            'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        },
-        form: {
-            token: refreshToken,
-            token_type_hint: 'refresh_token'
-        }
-    }).auth(clientid, secret)
-
-    return response;
-}
-
-export const revokeTempAccessToken = async(accessToken: string, clientid: string, secret: string) => {
-    console.log(accessToken)
-    let response = await rp({
-        uri: 'https://www.reddit.com/api/v1/revoke_token',
-        method: 'POST',
-        json: true,
-        headers: {
-            // Authorization: `Basic ${btoa(clientid + ":" + secret)}`,
-            'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        },
-        form: {
-            token: accessToken,
-            token_type_hint: 'access_token'
-        }
-    }).auth(clientid, secret)
-
-    return response;
-}
-
-export const getSubredditInfo = async (accessToken: string, after?:string) => {
-    let uri = `https://oauth.reddit.com/subreddits/mine/subscriber?limit=100`
-    if(after){
-        uri = `https://oauth.reddit.com/subreddits/mine/subscriber?limit=100&after=${after}`
+    const data = querystring.stringify({
+        token: refreshToken,
+        token_type_hint: 'refresh_token'
+    });
+    const headers = {
+        'User-Agent': 'Submatch/0.1 by Submatch_bot'
     }
-    let response = await rp({
-        uri: uri,
-        json: true,
-        headers: {
-            Authorization: `bearer ${accessToken}`,
-            'User-Agent': 'Submatch/0.1 by Submatch_bot'
-        }
-    })
-
-    return response
-}
-
-export const getSubreddits = async (accessToken: string) => {
-    let response = await getSubredditInfo(accessToken) 
-    let subreddits = response.data.children
-    while (response.data.after !== null) {
-        console.log(response.data.after)
-        response = await getSubredditInfo(accessToken, response.data.after)
-        console.log(response.data.after)
-        subreddits = [...subreddits, ...response.data.children]
-    }
-    return subreddits
+    const response = await axios.post('https://www.reddit.com/api/v1/revoke_token', data, { headers, auth: { username: clientid, password: secret } });
+    return response.data;
 }

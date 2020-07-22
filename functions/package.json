@@ -7,23 +7,27 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "jest --config -- index.test.ts"
+    "test": "jest --config -- index.test.ts",
+    "lint": "eslint . --ext .ts"
   },
   "engines": {
     "node": "8"
   },
   "main": "lib/index.js",
   "dependencies": {
+    "axios": "^0.19.2",
     "firebase": "^7.7.0",
     "firebase-admin": "^8.9.1",
     "firebase-functions": "^3.1.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.5"
+    "querystring": "^0.2.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "@types/request-promise": "^4.1.45",
     "@types/jest": "^24.9.0",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "eslint": "^7.4.0",
+    "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.2.2"
   },
