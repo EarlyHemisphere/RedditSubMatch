@@ -4,7 +4,7 @@ import { firebaseFunctions } from 'app/firebase/base';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, Typography, TextField, Button, CircularProgress, Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { purple, blue } from '@material-ui/core/colors';
+import { purple } from '@material-ui/core/colors';
 import { useAsync } from "react-async"
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -100,7 +100,7 @@ const updateBlacklist = async (newBlacklist) => {
   await saveBlacklist({ accessToken: window.sessionStorage.getItem('token'), blacklist: newBlacklist})
 }
 
-export const Blacklist = (props) => {
+export const Blacklist = () => {
   const styles = useStyles();
   const username = window.sessionStorage.getItem('username')
   let blacklist = window.sessionStorage.getItem('currentBlacklist')
@@ -113,28 +113,28 @@ export const Blacklist = (props) => {
 
   const openSuccessSnackbar = () => {
     setSuccessSnackbarOpen(true)
-    window.sessionStorage.setItem('currentBlacklist', textFieldValue)
+    window.sessionStorage.setItem('currentBlacklist', textFieldValue!) // TODO: test null
     blacklist = textFieldValue
   }
 
-  const openErrorSnackbar = (e) => {
+  const openErrorSnackbar = () => {
     setSuccessSnackbarOpen(false)
     setBlacklistChanged(true)
     setErrorSnackbarOpen(true)
   }
 
-  const { isPending, error, run } = useAsync({ deferFn: updateBlacklist, onResolve: openSuccessSnackbar, onReject: openErrorSnackbar })
+  const { isPending, run } = useAsync({ deferFn: updateBlacklist, onResolve: openSuccessSnackbar, onReject: openErrorSnackbar })
 
-  const textFieldChange = (e) => {
-    let newVal = e.target.value
+  const textFieldChange = (e: any) => {
+    const newVal = e.target.value
     setTextFieldValue(newVal)
-    if (newVal.replace(/\s/g, "") == blacklist.replace(/\s/g, "")) {
+    if (newVal.replace(/\s/g, "") == blacklist!.replace(/\s/g, "")) {
       setBlacklistChanged(false)
     } else {
       setBlacklistChanged(true)
     }
-    let usernames = newVal.split(",")
-    let usernamesValid = usernames.every((username) => {
+    const usernames = newVal.split(",")
+    const usernamesValid = usernames.every((username) => {
       username = username.trim()
       if (username.length < 3 || username.length > 20) {
         setHelperText("All usernames have to be 3-20 characters long")
@@ -142,7 +142,7 @@ export const Blacklist = (props) => {
       } else if (!usernameRegex.test(username)) {
         setHelperText("One or more usernames contain invalid characters")
         return false
-      } else if (username.toLowerCase() == window.sessionStorage.getItem('username').toLowerCase()) {
+      } else if (username.toLowerCase() == window.sessionStorage.getItem('username')!.toLowerCase()) {
         setHelperText("You cannot include your own username in the blacklist")
         return false
       }
@@ -153,33 +153,33 @@ export const Blacklist = (props) => {
     } else if (usernamesValid) {
       setHelperText("Enter a list of usernames seperated by commas")
     }
-  }
+  } 
 
-  const handleUpdateClick = (e) => {
-    let newBlacklist = []
-    const usernames = textFieldValue.split(',')
-    usernames.forEach((username) => {
-      newBlacklist.push(username.trim())
+  const handleUpdateClick = () => {
+    const newBlacklist: string[] = []
+    const usernames = textFieldValue!.split(',')
+    usernames.forEach(username => {
+      newBlacklist.push(username.trim());
     })
     run(newBlacklist)
     setBlacklistChanged(false)
   }
 
-  const closeSuccessSnackbar = (e) => {
+  const closeSuccessSnackbar = () => {
     setSuccessSnackbarOpen(false)
   }
 
-  const closeErrorSnackbar = (e) => {
+  const closeErrorSnackbar = () => {
     setErrorSnackbarOpen(false)
   }
 
   return (
     <Container maxWidth={false} classes={{ root: style.normal }}>
       <Grid container
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            style={{ minHeight: '100vh' }}>
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        style={{ minHeight: '100vh' }}>
         <Typography display="block" className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Typography display="block" className={`${styles.noSelect} ${styles.currentBlacklistLabel}`}>{username}'s current blacklist:</Typography>
         <TextField 
@@ -208,8 +208,6 @@ export const Blacklist = (props) => {
         open={successSnackbarOpen}
         autoHideDuration={5000}
         onClose={closeSuccessSnackbar}
-        bodyStyle={styles.snackBar}
-        onActionTouchTap={closeSuccessSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         classes={{ root: styles.snackBarRoot }}>
         <MuiAlert elevation={6} variant="filled" severity="success" classes={{ root: styles.alertRoot, icon: styles.alertIcon }}>Blacklist updated!</MuiAlert>
@@ -218,8 +216,6 @@ export const Blacklist = (props) => {
         open={errorSnackbarOpen}
         autoHideDuration={5000}
         onClose={closeErrorSnackbar}
-        bodyStyle={styles.snackBar}
-        onActionTouchTap={closeErrorSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         classes={{ root: styles.snackBarRoot }}>
         <MuiAlert elevation={6} variant="filled" severity="error" classes={{ root: styles.alertRoot, icon: styles.alertIcon }}>There was an error updating your blacklist. Please try again later.</MuiAlert>

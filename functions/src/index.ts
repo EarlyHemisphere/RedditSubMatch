@@ -8,6 +8,12 @@ const database = admin.database();
 
 interface submitUserLogin_i {
     code: string;
+    testing: boolean;
+}
+
+interface saveBlacklist_i {
+    accessToken: string;
+    blacklist: any;
 }
 
 exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i) => {
@@ -17,10 +23,13 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
         let userInfo;
         let resp: any;
 
+        const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
+        const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
+
         console.log("ADDING USER TOKEN");
         console.log("GETTING TOKEN(S)");
         try {
-            ({ refreshToken, accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret));
+            ({ refreshToken, accessToken } = await getAccessToken(data.code, clientid, secret, data.testing));
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN AND REFRESH TOKEN", err);
             res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error });
@@ -64,7 +73,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             console.log('Current refresh token: ' + currentRefreshToken);
                             console.log('CHECKING IF CURRENT REFRESH TOKEN IS VALID');
                             try {
-                                resp = await testRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret);
+                                resp = await testRefreshToken(currentRefreshToken, clientid, secret);
                             } catch (err) {
                                 if (err.error.error != 400) {
                                     console.error('FAILED TO TEST CURRENT REFRESH TOKEN', err);
@@ -80,7 +89,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             if (!resp['access_token']) {
                                 console.log('SAVED REFRESH TOKEN IS INVALID, REVOKING');
                                 try {
-                                    resp = await revokeRefreshToken(currentRefreshToken, functions.config().reddit.clientid, functions.config().reddit.secret);
+                                    resp = await revokeRefreshToken(currentRefreshToken, clientid, secret);
                                 } catch(err) {
                                     console.error("FAILED REVOKING SAVED REFRESH TOKEN", err);
                                     res({ ok: false, message: "Revoking of saved refresh token failed. Error code: " + err.error.error });
@@ -90,7 +99,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             } else {
                                 console.log('REVOKING CURRENT REFRESH TOKEN');
                                 try {
-                                    await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret);
+                                    await revokeRefreshToken(refreshToken, clientid, secret);
                                 } catch(err) {
                                     console.error("FAILED REVOKING CURRENT REFRESH TOKEN", err);
                                     res({ ok: false, message: "Revoking of current refresh token failed. Error code: " + err.error.error });
@@ -125,10 +134,13 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         let resp;
         let userInfo;
 
+        const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
+        const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
+
         console.log("DELETING USER INFO");
         console.log("GETTING ACCESS TOKEN");
         try {
-            ({ accessToken } = await getAccessToken(data.code, functions.config().reddit.clientid, functions.config().reddit.secret));
+            ({ accessToken } = await getAccessToken(data.code, clientid, secret, data.testing));
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN", err);
             res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error });
@@ -178,7 +190,7 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
                     if (refreshToken) {
                         console.log("REVOKING PERMANENT REFRESH TOKEN");
                         try {
-                            resp = await revokeRefreshToken(refreshToken, functions.config().reddit.clientid, functions.config().reddit.secret);
+                            resp = await revokeRefreshToken(refreshToken, clientid, secret);
                         } catch(err) {
                             console.error("FAILED REVOKING REFRESH TOKEN", err);
                             res({ ok: false, message: "Revoking of refresh token failed. Error code: " + err.error.error });
@@ -221,8 +233,11 @@ exports.getTokenAndBlacklist = functions.https.onCall(async (data) => {
         let accessToken: string;
         let userInfo: any;
 
+        const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
+        const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
+
         try {
-            ({ accessToken } = await getAccessToken(data['code'], functions.config().reddit.clientid, functions.config().reddit.secret));
+            ({ accessToken } = await getAccessToken(data['code'], clientid, secret, data.testing));
         } catch(err) {
             console.error("FAILED GETTING ACCESS TOKEN", err);
             res({ ok: false, message: "Access token retrieval failed. Error code: " + err.error.error });
@@ -272,10 +287,10 @@ exports.getTokenAndBlacklist = functions.https.onCall(async (data) => {
     });
 });
 
-exports.saveBlacklist = functions.https.onCall(async (data) => {
+exports.saveBlacklist = functions.https.onCall(async (data: saveBlacklist_i) => {
     return new Promise(async (res, rej) => {
-        const accessToken = data['accessToken'];
-        const newBlacklist = data['blacklist'][0];
+        const accessToken = data.accessToken;
+        const newBlacklist = data.blacklist[0];
         let userInfo;
         console.log(newBlacklist);
 

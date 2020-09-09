@@ -107,11 +107,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const getUrl = (optOut: Boolean = false) => {
+const getUrl = (optOut = false) => {
   return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`
 }
 
-const setLocalStorage = (optOut: Boolean = false) => {
+const setLocalStorage = (optOut = false) => {
   localStorage.setItem('isBrowser', 'true')
   localStorage.setItem('optOut', optOut.toString())
   window.sessionStorage.setItem('blacklist', 'false')
@@ -121,7 +121,7 @@ const getSignupCount = async () => {
   return await db.ref('signup_count').once('value')
 }
 
-export default function home(props) {
+export default function home() {
   const styles = useStyles();
   localStorage.setItem('isBrowser', 'false')
 
@@ -141,14 +141,14 @@ export default function home(props) {
             </Async.Loading>
             <Async.Rejected>
               { () => {
-                  return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: could not fetch</Typography>
-                }
+                return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: could not fetch</Typography>
+              }
               }
             </Async.Rejected>
             <Async.Fulfilled>
               { (snapshot:any) => {
-                  return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <b>{snapshot.val()}</b></Typography>
-                }
+                return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <b>{snapshot.val()}</b></Typography>
+              }
               }
             </Async.Fulfilled>
           </Async>

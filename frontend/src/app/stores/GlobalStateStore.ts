@@ -1,8 +1,7 @@
 import { observable } from "mobx";
 
 export class GlobalStateStore {
-    constructor(){
-    }
+  constructor(){}
 }   
 
 export default GlobalStateStore;

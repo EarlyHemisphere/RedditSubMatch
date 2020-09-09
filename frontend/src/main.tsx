@@ -5,8 +5,6 @@ import { createBrowserHistory } from 'history';
 import { createStores } from 'app/stores';
 import { App } from 'app';
 
-
-
 // prepare MobX stores
 const history = createBrowserHistory();
 const rootStore = createStores(history);

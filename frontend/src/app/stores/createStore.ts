@@ -1,7 +1,7 @@
 import { History } from 'history';
 import { RouterStore } from './RouterStore';
 import { GlobalStateStore } from './GlobalStateStore';
-import { STORE_ROUTER, GLOBAL_STATE, AUTH_STORE } from 'app/constants';
+import { STORE_ROUTER, GLOBAL_STATE } from 'app/constants';
 
 
 
