@@ -8,13 +8,13 @@ import { GitHub, Reddit } from '@material-ui/icons';
 import { db } from 'app/firebase/base';
 import Async from 'react-async';
 
-const CLIENT_ID = 'BRgd2M3wfJD7Vw'
-const CODE = 'code'
-const REDIRECT_URI = 'https://redditsubmatch.com/redirect'
-const SIGNUP_DURATION = 'permanent'
-const OPTOUT_DURATION = 'temporary'
-const SIGNUP_SCOPE = 'mysubreddits%20identity'
-const OPTOUT_SCOPE = 'identity'
+const CLIENT_ID = 'BRgd2M3wfJD7Vw';
+const CODE = 'code';
+const REDIRECT_URI = 'https://redditsubmatch.com/redirect';
+const SIGNUP_DURATION = 'permanent';
+const OPTOUT_DURATION = 'temporary';
+const SIGNUP_SCOPE = 'mysubreddits%20identity';
+const OPTOUT_SCOPE = 'identity';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   signupBtn: {
@@ -108,65 +108,67 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const getUrl = (optOut = false) => {
-  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`
+  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`;
 }
 
 const setLocalStorage = (optOut = false) => {
-  localStorage.setItem('isBrowser', 'true')
-  localStorage.setItem('optOut', optOut.toString())
-  window.sessionStorage.setItem('blacklist', 'false')
+  localStorage.setItem('isBrowser', 'true');
+  localStorage.setItem('optOut', optOut.toString());
+  window.sessionStorage.setItem('blacklist', 'false');
 }
 
 const getSignupCount = async () => {
-  return await db.ref('signup_count').once('value')
+  return await db.ref('signup_count').once('value');
 }
 
 export default function home() {
   const styles = useStyles();
-  localStorage.setItem('isBrowser', 'false')
+  localStorage.setItem('isBrowser', 'false');
 
   return (
     <Container maxWidth={false} classes={{ root: style.home }}>
       <Grid container
         spacing={0}
-        direction="column"
-        alignItems="center"
+        direction='column'
+        alignItems='center'
         style={{ minHeight: '100vh' }}
         classes={{ root: styles.parentGrid }}>
-        <Typography variant="h1" display="block" className={`${style.title} ${styles.noSelect} ${styles.title}`}>submatch</Typography>
-        <Grid classes={{ root: styles.outerGrid }} container spacing={0} direction="column" alignItems="center" justify="center">
+        <Typography variant='h1' display='block' className={`${style.title} ${styles.noSelect} ${styles.title}`}>submatch</Typography>
+        <Grid classes={{ root: styles.outerGrid }} container spacing={0} direction='column' alignItems='center' justify='center'>
           <Async promiseFn={getSignupCount}>
             <Async.Loading>
-              <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
+              <Typography display='block' variant='overline' className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
             </Async.Loading>
             <Async.Rejected>
-              { () => {
-                return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: could not fetch</Typography>
-              }
+              { 
+                () => {
+                  return <Typography display='block' variant='overline' className={`${styles.signupCount} ${styles.noSelect}`}>signup count: could not fetch</Typography>
+                }
               }
             </Async.Rejected>
             <Async.Fulfilled>
-              { (snapshot:any) => {
-                return <Typography display="block" variant="overline" className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <b>{snapshot.val()}</b></Typography>
-              }
+              {
+                (snapshot:any) => {
+                  return <Typography display='block' variant='overline' className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <b>{snapshot.val()}</b></Typography>
+                }
               }
             </Async.Fulfilled>
           </Async>
-          <Button href={getUrl()} onClick={((e) => setLocalStorage())} classes={{ root: styles.signupBtn, label: styles.label }} size="large">sign up</Button>
+          <Button href={getUrl()} onClick={((e) => setLocalStorage())} classes={{ root: styles.signupBtn, label: styles.label }} size='large'>sign up</Button>
           <Hidden mdDown>
-            <Typography variant="button" display="block" style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
+            <Typography variant='button' display='block' style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
           </Hidden>
-          <Button href={getUrl(true)} onClick={((e) => setLocalStorage(true))} variant="outlined" size="large" classes={{ root: styles.optOut }}>unsubscribe</Button>
+          <Button href={getUrl(true)} onClick={((e) => setLocalStorage(true))} variant='outlined' size='large' classes={{ root: styles.optOut }}>unsubscribe</Button>
           <Hidden mdDown>
-            <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
+            <Grid classes={{ root: style.bottomButtons }} direction='row' alignItems='center' justify='center'>
               <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
                 <IconButton>
-                  <GitHub fontSize="large" />
+                  <GitHub fontSize='large' />
                 </IconButton>
               </Link>
               <Link href='https://www.reddit.com/r/submatch'>
                 <IconButton>
-                  <Reddit color="secondary" fontSize="large" />
+                  <Reddit color='secondary' fontSize='large' />
                 </IconButton>
               </Link>
             </Grid>

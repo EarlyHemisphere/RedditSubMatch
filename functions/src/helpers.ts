@@ -17,7 +17,7 @@ export const getUserInfo = async (accessToken: string): Promise<any> => {
     console.log(accessToken);
     const headers = {
         Authorization: `bearer ${accessToken}`,
-        'User-Agent': 'Submatch/0.1 by Submatch_bot'
+        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
     }
     const response = await axios.get('https://oauth.reddit.com/api/v1/me', { headers });
     return response.data;
@@ -29,7 +29,7 @@ export const testRefreshToken = async (refreshToken: string, clientid: string, s
         refresh_token: refreshToken
     });
     const headers = {
-        'User-Agent': 'Submatch/0.1 by Submatch_bot'
+        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
     }
     const response = await axios.post('https://www.reddit.com/api/v1/access_token', data, { headers, auth: { username: clientid, password: secret } });
     return response.data;
@@ -42,7 +42,7 @@ export const revokeRefreshToken = async(refreshToken: string, clientid: string, 
         token_type_hint: 'refresh_token'
     });
     const headers = {
-        'User-Agent': 'Submatch/0.1 by Submatch_bot'
+        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
     }
     const response = await axios.post('https://www.reddit.com/api/v1/revoke_token', data, { headers, auth: { username: clientid, password: secret } });
     return response.data;

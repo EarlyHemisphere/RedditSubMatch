@@ -24,7 +24,7 @@ const renderSuccess = (loading, response, component) => {
 }
 
 export const Redirect = (props) => {
-  const data = { code: qs.parse(props.location.search).code, testing: false };
+  const data = { code: qs.parse(props.location.search).code, testing: true };
   const [loading, setLoading] = React.useState(true)
   const [response, setResponse] = React.useState({})
   const optOut = localStorage.getItem('optOut') == 'true'
@@ -33,7 +33,7 @@ export const Redirect = (props) => {
   
   if (blacklist) {
     if (isBrowser) {
-      const getTokenAndBlacklist = firebaseFunctions.httpsCallable("getTokenAndBlacklist")
+      const getTokenAndBlacklist = firebaseFunctions.httpsCallable('getTokenAndBlacklist')
       getTokenAndBlacklist(data).then((r) => {
         setResponse(r.data)
         setLoading(false)
@@ -43,7 +43,7 @@ export const Redirect = (props) => {
   } else {
     if (optOut) {
       if (isBrowser) {
-        const deleteUserInfo = firebaseFunctions.httpsCallable("deleteUserInfo")
+        const deleteUserInfo = firebaseFunctions.httpsCallable('deleteUserInfo')
         deleteUserInfo(data).then((r)=>{
           setLoading(false)
           setResponse(r.data)
@@ -52,7 +52,7 @@ export const Redirect = (props) => {
       return renderSuccess(loading, response, <Optout/>)
     } else {
       if (isBrowser) {
-        const submitUserLogin = firebaseFunctions.httpsCallable("submitUserLogin")
+        const submitUserLogin = firebaseFunctions.httpsCallable('submitUserLogin')
         submitUserLogin(data).then((r)=>{
           setLoading(false)
           setResponse(r.data)

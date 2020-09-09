@@ -36,23 +36,23 @@ export default function Optout() {
     <Container maxWidth={false} classes={{ root: style.normal }}>
       <Grid container
         spacing={0}
-        direction="column"
-        alignItems="center"
+        direction='column'
+        alignItems='center'
         style={{ minHeight: '100vh' }}>
-        <Typography display="block" className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
-        <Typography display="block" align="center" gutterBottom className={`${styles.text} ${styles.noSelect}`}>
+        <Typography display='block' className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
+        <Typography display='block' align='center' gutterBottom className={`${styles.text} ${styles.noSelect}`}>
           You have been <b style={{ color: '#29a329' }}>removed</b> from matching and any data you've given us has been deleted.
         </Typography>
         <Hidden mdDown>
-          <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
+          <Grid classes={{ root: style.bottomButtons }} direction='row' alignItems='center' justify='center'>
             <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
               <IconButton>
-                <GitHub fontSize="large" />
+                <GitHub fontSize='large' />
               </IconButton>
             </Link>
             <Link href='https://www.reddit.com/r/submatch'>
               <IconButton>
-                <Reddit color="secondary" fontSize="large" />
+                <Reddit color='secondary' fontSize='large' />
               </IconButton>
             </Link>
           </Grid>

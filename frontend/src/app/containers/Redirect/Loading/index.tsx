@@ -30,12 +30,12 @@ export const Loading = () => {
       <Grid
         container
         spacing={0}
-        direction="column"
-        alignItems="center"
+        direction='column'
+        alignItems='center'
         style={{ minHeight: '100vh' }}>
-        <Typography display="block" className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
+        <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Backdrop open={true} style={{ zIndex: 1 }}>
-          <CircularProgress color="inherit" />
+          <CircularProgress color='inherit' />
         </Backdrop>
       </Grid>
     </Container>

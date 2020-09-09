@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   error: {
     marginBottom: 100,
-    fontFamily: "Lucida Console"
+    fontFamily: 'Lucida Console'
   },
   noSelect: {
     WebkitTouchCallout: 'none',
@@ -40,29 +40,29 @@ export const Error = ({response}) => {
     <Container maxWidth={false} classes={{ root: style.normal }}>
       <Grid container
         spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="flex-start"
+        direction='column'
+        alignItems='center'
+        justify='flex-start'
         style={{ minHeight: '100vh' }}>
-        <Typography display="block" className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
+        <Typography display='block' className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
         <Grid
-          direction="row"
-          alignItems="flex-start"
-          justify="center"
+          direction='row'
+          alignItems='flex-start'
+          justify='center'
           style={{ height: '200px'}}>
-          <Typography align="center" className={`${styles.text} ${styles.noSelect}`} display="block">API Error:</Typography>
-          <Typography align="center" className={`${styles.text} ${styles.error}`} display="block">{response.message}</Typography>
-          <Typography align="center" className={`${styles.text} ${styles.noSelect}`} display="block">Please try again later.</Typography>
+          <Typography align='center' className={`${styles.text} ${styles.noSelect}`} display='block'>API Error:</Typography>
+          <Typography align='center' className={`${styles.text} ${styles.error}`} display='block'>{response.message}</Typography>
+          <Typography align='center' className={`${styles.text} ${styles.noSelect}`} display='block'>Please try again later.</Typography>
           <Hidden mdDown>
-            <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
+            <Grid classes={{ root: style.bottomButtons }} direction='row' alignItems='center' justify='center'>
               <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
                 <IconButton>
-                  <GitHub fontSize="large" />
+                  <GitHub fontSize='large' />
                 </IconButton>
               </Link>
               <Link href='https://www.reddit.com/r/submatch'>
                 <IconButton>
-                  <Reddit color="secondary" fontSize="large" />
+                  <Reddit color='secondary' fontSize='large' />
                 </IconButton>
               </Link>
             </Grid>

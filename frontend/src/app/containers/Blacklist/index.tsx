@@ -4,11 +4,11 @@ import { generateRandomString } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Button } from '@material-ui/core';
 
-const CLIENT_ID = 'BRgd2M3wfJD7Vw'
-const CODE = 'code'
-const REDIRECT_URI = 'https://redditsubmatch.com/redirect'
-const DURATION = 'temporary'
-const SCOPE = 'identity'
+const CLIENT_ID = 'BRgd2M3wfJD7Vw';
+const CODE = 'code';
+const REDIRECT_URI = 'https://redditsubmatch.com/redirect';
+const DURATION = 'temporary';
+const SCOPE = 'identity';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
@@ -60,27 +60,27 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const setStorage = () => {
-  localStorage.setItem('isBrowser', 'true')
-  window.sessionStorage.setItem('blacklist', 'true')
+  localStorage.setItem('isBrowser', 'true');
+  window.sessionStorage.setItem('blacklist', 'true');
 }
 
 const getUrl = () => {
-  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`
+  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`;
 }
 
 export const Blacklist = () => {
-  const styles = useStyles()
+  const styles = useStyles();
 
   return (
     <Container maxWidth={false} classes={{ root: style.normal }}>
       <Grid container
         spacing={0}
-        direction="column"
-        alignItems="center"
+        direction='column'
+        alignItems='center'
         style={{ minHeight: '100vh' }}>
-        <Typography display="block" className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
-        <Button href={getUrl()} onClick={setStorage} classes={{ root: styles.authBtn, label: styles.label }} size="large">authenticate</Button>
+        <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
+        <Button href={getUrl()} onClick={setStorage} classes={{ root: styles.authBtn, label: styles.label }} size='large'>authenticate</Button>
       </Grid>
     </Container>
-  )
+  );
 }

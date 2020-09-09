@@ -49,23 +49,23 @@ export default function Optin() {
     <Container maxWidth={false} classes={{ root: style.normal }}>
       <Grid container
         spacing={0}
-        direction="column"
-        alignItems="center"
+        direction='column'
+        alignItems='center'
         style={{ minHeight: '100vh' }}>
-        <Typography display="block" className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
-        <Typography display="block" className={`${styles.success} ${styles.noSelect}`}><b>Success!</b></Typography>
-        <Typography display="block" align="center" className={`${styles.text} ${styles.noSelect}`}>You are now participating in regular matching!</Typography>
-        <Typography display="block" align="center" gutterBottom className={`${styles.text2} ${styles.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
+        <Typography display='block' className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
+        <Typography display='block' className={`${styles.success} ${styles.noSelect}`}><b>Success!</b></Typography>
+        <Typography display='block' align='center' className={`${styles.text} ${styles.noSelect}`}>You are now participating in regular matching!</Typography>
+        <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${styles.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
         <Hidden mdDown>
-          <Grid classes={{ root: style.bottomButtons }} direction="row" alignItems="center" justify="center">
+          <Grid classes={{ root: style.bottomButtons }} direction='row' alignItems='center' justify='center'>
             <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
               <IconButton>
-                <GitHub fontSize="large" />
+                <GitHub fontSize='large' />
               </IconButton>
             </Link>
             <Link href='https://www.reddit.com/r/submatch'>
               <IconButton>
-                <Reddit color="secondary" fontSize="large" />
+                <Reddit color='secondary' fontSize='large' />
               </IconButton>
             </Link>
           </Grid>
