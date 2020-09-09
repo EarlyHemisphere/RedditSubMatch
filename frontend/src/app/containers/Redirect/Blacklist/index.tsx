@@ -110,6 +110,7 @@ export const Blacklist = () => {
   const [successSnackbarOpen, setSuccessSnackbarOpen] = React.useState(false)
   const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false)
   const usernameRegex = RegExp("^[A-Za-z0-9_-]+$")
+  const defaultHelperText = 'Enter a list of usernames seperated by commas';
 
   const openSuccessSnackbar = () => {
     setSuccessSnackbarOpen(true)
@@ -134,7 +135,13 @@ export const Blacklist = () => {
       setBlacklistChanged(true)
     }
     const usernames = newVal.split(",")
-    const usernamesValid = usernames.every((username) => {
+    
+    if (usernames.length == 1 && !usernames[0]) {
+      setHelperText(defaultHelperText)
+      return;
+    }
+
+    const usernamesValid = usernames.every((username: string) => {
       username = username.trim()
       if (username.length < 3 || username.length > 20) {
         setHelperText("All usernames have to be 3-20 characters long")
@@ -147,11 +154,12 @@ export const Blacklist = () => {
         return false
       }
       return true
-    })
+    });
+
     if ((new Set(usernames)).size !== usernames.length) {
       setHelperText("Duplicate usernames are not allowed")
     } else if (usernamesValid) {
-      setHelperText("Enter a list of usernames seperated by commas")
+      setHelperText("")
     }
   } 
 
@@ -190,13 +198,13 @@ export const Blacklist = () => {
           value={textFieldValue}
           onChange={textFieldChange}
           helperText={helperText}
-          error={helperText != "Enter a list of usernames seperated by commas"}></TextField>
+          error={helperText != "" && helperText != defaultHelperText}></TextField>
         <Button
           onClick={handleUpdateClick}
           variant="contained"
           classes={{ root: styles.updateBtn, label: styles.label }}
           size="large"
-          disabled={!blacklistChanged || helperText != "Enter a list of usernames seperated by commas"}>
+          disabled={!blacklistChanged || helperText != "" && helperText != defaultHelperText}>
           {
             isPending
               ? <CircularProgress/>
