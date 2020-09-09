@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from 'axios';
 import querystring from 'querystring';
 
-export const getAccessToken = async(code: string, clientid: string, secret: string, testing: boolean = false): Promise<any> => {
+export const getAccessToken = async(code: string, clientid: string, secret: string, testing = false): Promise<any> => {
     console.log(code);
     const data = querystring.stringify({
         grant_type: 'authorization_code',
