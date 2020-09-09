@@ -134,7 +134,7 @@ export const Blacklist = () => {
     } else {
       setBlacklistChanged(true)
     }
-    const usernames = newVal.split(",")
+    const usernames = newVal.split(",").map((username: string) => username.trim())
     
     if (usernames.length == 1 && !usernames[0]) {
       setHelperText(defaultHelperText)
@@ -142,7 +142,6 @@ export const Blacklist = () => {
     }
 
     const usernamesValid = usernames.every((username: string) => {
-      username = username.trim()
       if (username.length < 3 || username.length > 20) {
         setHelperText("All usernames have to be 3-20 characters long")
         return false
