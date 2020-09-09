@@ -312,11 +312,17 @@ exports.saveBlacklist = functions.https.onCall(async (data: saveBlacklist_i) => 
         const USERNAME = userInfo.name;
         console.log(USERNAME);
 
-        console.log("WRITING BLACKLIST TO DB");
-        await firestore.collection("blacklists").doc(USERNAME).set({
-            timestamp: new Date().getTime(),
-            blacklist: newBlacklist,
-        });
+        if (newBlacklist.length == 0 || newBlacklist.length == 1 && newBlacklist[0] == '') {
+            console.log("REMOVING USER BLACKLIST");
+            await firestore.collection("blacklists").doc(USERNAME).delete();
+        } else {
+            console.log("WRITING BLACKLIST TO DB");
+            await firestore.collection("blacklists").doc(USERNAME).set({
+                timestamp: new Date().getTime(),
+                blacklist: newBlacklist,
+            });
+        }
+        
         res({ ok: true, message: "success" });
         return;
     });
