@@ -24,7 +24,7 @@ const renderSuccess = (loading, response, component) => {
 }
 
 export const Redirect = (props) => {
-  const data = { code: qs.parse(props.location.search).code, testing: true };
+  const data = { code: qs.parse(props.location.search).code, testing: false };
   const [loading, setLoading] = React.useState(true)
   const [response, setResponse] = React.useState({})
   const optOut = localStorage.getItem('optOut') == 'true'
