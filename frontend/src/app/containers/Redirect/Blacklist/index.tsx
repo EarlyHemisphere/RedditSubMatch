@@ -10,7 +10,7 @@ import { useAsync } from 'react-async';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
     fontSize: '5rem',
-    marginTop: '20vh',
+    marginTop: '10vh',
     marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
       fontSize: '6rem',
@@ -26,7 +26,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   label: {
     fontSize: '24px',
-    color: 'white'
+    color: 'white',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '48px',
+    }
   },
   currentBlacklistLabel: {
     fontSize: '24px',
@@ -41,18 +44,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
       width: '80%',
-      marginBottom: '17vh'
+      marginBottom: '8vh'
     }
   },
   blacklistText: {
     fontSize: '20px',
+    backgroundColor: 'white',
     [theme.breakpoints.down('md')]: {
       fontSize: '40px'
     }
   },
   updateBtn: {
     [theme.breakpoints.down('md')]: {
-      height: 100,
+      height: 150,
       width: '100%',
       fontSize: '24px',
       borderRadius: 15,
@@ -104,7 +108,7 @@ export const Blacklist = () => {
   const styles = useStyles();
   const username = window.sessionStorage.getItem('username');
   let blacklist = window.sessionStorage.getItem('currentBlacklist');
-  const [textFieldValue, setTextFieldValue] = React.useState(blacklist);
+  const [textFieldValue, setTextFieldValue] = React.useState(blacklist ? blacklist : '');
   const [blacklistChanged, setBlacklistChanged] = React.useState(false);
   const [helperText, setHelperText] = React.useState('Enter a list of usernames seperated by commas');
   const [successSnackbarOpen, setSuccessSnackbarOpen] = React.useState(false);
@@ -186,7 +190,7 @@ export const Blacklist = () => {
         spacing={0}
         direction='column'
         alignItems='center'
-        style={{ minHeight: '100vh' }}>
+        style={{ height: '100%', overflow: 'hidden' }}>
         <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Typography display='block' className={`${styles.noSelect} ${styles.currentBlacklistLabel}`}>{username}'s current blacklist:</Typography>
         <TextField 

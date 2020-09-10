@@ -6,7 +6,7 @@ import { Container, Grid, Typography, Backdrop, CircularProgress } from '@materi
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
     fontSize: '5rem',
-    marginTop: '20vh',
+    marginTop: '10vh',
     marginBottom: '20vh',
     [theme.breakpoints.down('md')]: {
       fontSize: '6rem',
@@ -32,7 +32,7 @@ export const Loading = () => {
         spacing={0}
         direction='column'
         alignItems='center'
-        style={{ minHeight: '100vh' }}>
+        style={{ height: '100%' }}>
         <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Backdrop open={true} style={{ zIndex: 1 }}>
           <CircularProgress color='inherit' />

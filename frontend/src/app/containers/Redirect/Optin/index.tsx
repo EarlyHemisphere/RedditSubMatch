@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as style from '../style.scss';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { Container, Grid, Typography, Hidden, Link, IconButton } from '@material-ui/core';
-import { GitHub, Reddit } from '@material-ui/icons';
+import { Container, Grid, Typography } from '@material-ui/core';
+import ProjectLinks from '../../../components/ProjectLinks';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
     fontSize: '5rem',
-    marginTop: '20vh',
+    marginTop: '10vh',
     marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
       fontSize: '6rem',
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   success: {
     fontSize: '3rem',
-    marginBottom: '6rem',
+    marginBottom: '5vh',
     color: '#29a329',
   },
   noSelect: {
@@ -51,25 +51,12 @@ export default function Optin() {
         spacing={0}
         direction='column'
         alignItems='center'
-        style={{ minHeight: '100vh' }}>
+        style={{ height: '100%', overflow: 'hidden' }}>
         <Typography display='block' className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
         <Typography display='block' className={`${styles.success} ${styles.noSelect}`}><b>Success!</b></Typography>
         <Typography display='block' align='center' className={`${styles.text} ${styles.noSelect}`}>You are now participating in regular matching!</Typography>
         <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${styles.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
-        <Hidden mdDown>
-          <Grid classes={{ root: style.bottomButtons }} direction='row' alignItems='center' justify='center'>
-            <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
-              <IconButton>
-                <GitHub fontSize='large' />
-              </IconButton>
-            </Link>
-            <Link href='https://www.reddit.com/r/submatch'>
-              <IconButton>
-                <Reddit color='secondary' fontSize='large' />
-              </IconButton>
-            </Link>
-          </Grid>
-        </Hidden>
+        <ProjectLinks style={ style.centeredButtons }/>
       </Grid>
     </Container>
   );

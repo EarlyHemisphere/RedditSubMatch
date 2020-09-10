@@ -30,13 +30,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   authBtn: {
     [theme.breakpoints.down('md')]: {
-      height: 100,
-      width: '100%',
+      height: 150,
+      width: '94%',
       fontSize: '24px',
       borderRadius: 15,
       border: '3px solid',
-      marginTop: 'auto',
-      marginBottom: '2rem',
+      position: 'fixed',
+      bottom: '30px'
     },
     height: 80,
     width: 250,
@@ -55,7 +55,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   label: {
     fontSize: '24px',
-    color: 'white'
+    color: 'white',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '48px'
+    }
   }
 }));
 
@@ -77,7 +80,7 @@ export const Blacklist = () => {
         spacing={0}
         direction='column'
         alignItems='center'
-        style={{ minHeight: '100vh' }}>
+        style={{ height: '100%' }}>
         <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Button href={getUrl()} onClick={setStorage} classes={{ root: styles.authBtn, label: styles.label }} size='large'>authenticate</Button>
       </Grid>
