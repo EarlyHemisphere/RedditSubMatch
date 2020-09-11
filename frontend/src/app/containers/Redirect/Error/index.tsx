@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export const Error = ({response}) => {
-  const test = { message: 'test a reall reallyu really really reall y laslndkajdlasjdklajldjask long message'}
   const styles = useStyles();
 
   return (
@@ -52,7 +51,7 @@ export const Error = ({response}) => {
           alignItems='flex-start'
           style={{ height: '200px'}}>
           <Typography align='center' className={`${styles.text} ${styles.noSelect}`} display='block'>Error while attempting action:</Typography>
-          <Typography align='center' className={`${styles.text} ${styles.error}`} display='block'>{test.message}</Typography>
+          <Typography align='center' className={`${styles.text} ${styles.error}`} display='block'>{response.message}</Typography>
           <Typography align='center' className={`${styles.text} ${styles.noSelect}`} display='block'>Please try again later.</Typography>
         </Grid>
         <ProjectLinks style={ style.centeredButtons }/>
