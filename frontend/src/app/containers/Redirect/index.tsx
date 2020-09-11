@@ -8,57 +8,57 @@ import { Error } from './Error';
 import { Blacklist } from './Blacklist';
 
 const renderSuccess = (loading, response, component) => {
-  localStorage.setItem('isBrowser', 'false')
+  localStorage.setItem('isBrowser', 'false');
   if (response['accessToken']) {
-    window.sessionStorage.setItem('token', response['accessToken'])
-    window.sessionStorage.setItem('username', response['username'])
-    window.sessionStorage.setItem('currentBlacklist', response['blacklist'])
+    window.sessionStorage.setItem('token', response['accessToken']);
+    window.sessionStorage.setItem('username', response['username']);
+    window.sessionStorage.setItem('currentBlacklist', response['blacklist']);
   }
   if(loading){
-    return <Loading/>
+    return <Loading/>;
   }
   if(response.ok == false){
-    return <Error response={response}/>
+    return <Error response={response}/>;
   }
-  return component
+  return component;
 }
 
 export const Redirect = (props) => {
   const data = { code: qs.parse(props.location.search).code, testing: false };
-  const [loading, setLoading] = React.useState(true)
-  const [response, setResponse] = React.useState({})
-  const optOut = localStorage.getItem('optOut') == 'true'
-  const isBrowser = localStorage.getItem('isBrowser') == 'true'
-  const blacklist = window.sessionStorage.getItem('blacklist') == 'true'
+  const [loading, setLoading] = React.useState(true);
+  const [response, setResponse] = React.useState({});
+  const optOut = localStorage.getItem('optOut') == 'true';
+  const isBrowser = localStorage.getItem('isBrowser') == 'true';
+  const blacklist = window.sessionStorage.getItem('blacklist') == 'true';
   
   if (blacklist) {
     if (isBrowser) {
-      const getTokenAndBlacklist = firebaseFunctions.httpsCallable('getTokenAndBlacklist')
+      const getTokenAndBlacklist = firebaseFunctions.httpsCallable('getTokenAndBlacklist');
       getTokenAndBlacklist(data).then((r) => {
-        setResponse(r.data)
-        setLoading(false)
+        setResponse(r.data);
+        setLoading(false);
       });
     }
-    return renderSuccess(loading, response, <Blacklist/>)
+    return renderSuccess(loading, response, <Blacklist/>);
   } else {
     if (optOut) {
       if (isBrowser) {
-        const deleteUserInfo = firebaseFunctions.httpsCallable('deleteUserInfo')
+        const deleteUserInfo = firebaseFunctions.httpsCallable('deleteUserInfo');
         deleteUserInfo(data).then((r)=>{
-          setLoading(false)
-          setResponse(r.data)
+          setLoading(false);
+          setResponse(r.data);
         });
       }
-      return renderSuccess(loading, response, <Optout/>)
+      return renderSuccess(loading, response, <Optout/>);
     } else {
       if (isBrowser) {
-        const submitUserLogin = firebaseFunctions.httpsCallable('submitUserLogin')
+        const submitUserLogin = firebaseFunctions.httpsCallable('submitUserLogin');
         submitUserLogin(data).then((r)=>{
-          setLoading(false)
-          setResponse(r.data)
+          setLoading(false);
+          setResponse(r.data);
         });
       }
-      return renderSuccess(loading, response, <Optin/>)
+      return renderSuccess(loading, response, <Optin/>);
     }
   }
 }
