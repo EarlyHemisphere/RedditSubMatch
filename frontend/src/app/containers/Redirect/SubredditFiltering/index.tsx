@@ -133,6 +133,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     [theme.breakpoints.down('md')]: {
       fontSize: '40px'
     }
+  },
+  note: {
+    fontSize: '1.2rem',
+    textAlign: 'center',
+    marginTop: '1rem'
   }
 }));
 
@@ -157,8 +162,9 @@ export const SubredditFiltering = (props: Props) => {
     const title = document.getElementById('title')!;
     const successMsg = fromSignup ? document.getElementById('successMsg')! : null;
     const subSelectionMsg = document.getElementById('subSelectionMsg')!;
+    const note = document.getElementById('note')!;
     const outerGrid = document.getElementById('outerGrid')!;
-    outerGrid.style.height = `calc(100% - ${window.getComputedStyle(title).marginTop} - ${title.clientHeight}px - ${window.getComputedStyle(title).marginBottom} - ${successMsg != null ? successMsg.clientHeight : '0'}px - ${successMsg != null ? window.getComputedStyle(successMsg).marginBottom : '0px'} - ${subSelectionMsg.clientHeight}px - ${window.getComputedStyle(outerGrid).marginTop} - ${window.getComputedStyle(btnsContainer).bottom} - ${btnsContainer.clientHeight}px - 30px)`;
+    outerGrid.style.height = `calc(100% - ${window.getComputedStyle(title).marginTop} - ${title.clientHeight}px - ${window.getComputedStyle(title).marginBottom} - ${successMsg != null ? successMsg.clientHeight : '0'}px - ${successMsg != null ? window.getComputedStyle(successMsg).marginBottom : '0px'} - ${subSelectionMsg.clientHeight}px - ${window.getComputedStyle(note).marginTop} - ${note.clientHeight}px - ${window.getComputedStyle(outerGrid).marginTop} - ${window.getComputedStyle(btnsContainer).bottom} - ${btnsContainer.clientHeight}px - 30px)`;
   
     const selectAllBtn = document.getElementById('selectAllBtn')!;
     const searchInput = document.getElementById('searchInput')!;
@@ -283,6 +289,7 @@ export const SubredditFiltering = (props: Props) => {
             </> : <></>
         }
         <Typography id='subSelectionMsg' display='block' className={`${styles.subSelectionText} ${style.noSelect}`}>Please select any subscribed subreddits you would like to <i><b>exclude</b></i> from being considered when finding a match for you:</Typography>
+        <Typography id='note' display='block' className={`${styles.note} ${style.noSelect}`}><b>Note</b>: Please use sparingly - excluding too many subreddits may decrease the quality of your match.</Typography>
         <Grid
           container
           direction='column'

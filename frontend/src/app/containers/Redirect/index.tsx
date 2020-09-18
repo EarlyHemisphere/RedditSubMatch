@@ -9,7 +9,7 @@ import { Blacklist } from './Blacklist';
 import { SubredditFiltering } from './SubredditFiltering';
 
 export const Redirect = (props) => {
-  const data = { code: qs.parse(props.location.search).code, testing: true };
+  const data = { code: qs.parse(props.location.search).code, testing: false };
   const [loading, setLoading] = React.useState(true);
   const [response, setResponse] = React.useState({});
   const [subreddits, setSubreddits] = React.useState([]);
