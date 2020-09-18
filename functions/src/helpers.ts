@@ -1,6 +1,8 @@
 import axios from 'axios';
 import querystring from 'querystring';
 
+const userAgent = 'Submatch/0.1 by u/submatch_bot';
+
 export const getAccessToken = async(code: string, clientid: string, secret: string, testing = false): Promise<any> => {
     console.log(code);
     const data = querystring.stringify({
@@ -17,7 +19,7 @@ export const getUserInfo = async (accessToken: string): Promise<any> => {
     console.log(accessToken);
     const headers = {
         Authorization: `bearer ${accessToken}`,
-        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
+        'User-Agent': userAgent
     }
     const response = await axios.get('https://oauth.reddit.com/api/v1/me', { headers });
     return response.data;
@@ -29,7 +31,7 @@ export const testRefreshToken = async (refreshToken: string, clientid: string, s
         refresh_token: refreshToken
     });
     const headers = {
-        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
+        'User-Agent': userAgent
     }
     const response = await axios.post('https://www.reddit.com/api/v1/access_token', data, { headers, auth: { username: clientid, password: secret } });
     return response.data;
@@ -42,8 +44,22 @@ export const revokeRefreshToken = async(refreshToken: string, clientid: string, 
         token_type_hint: 'refresh_token'
     });
     const headers = {
-        'User-Agent': 'Submatch/0.1 by u/submatch_bot'
+        'User-Agent': userAgent
     }
     const response = await axios.post('https://www.reddit.com/api/v1/revoke_token', data, { headers, auth: { username: clientid, password: secret } });
     return response.data;
+}
+
+export const getSubreddits = async(accessToken: string, after?: string): Promise<string[]> => {
+    let subreddits = [];
+    const headers = {
+        'User-Agent': userAgent,
+        'Authorization': `Bearer ${accessToken}`
+    }
+    const response = await axios.get(`https://oauth.reddit.com/subreddits/mine/subscriber?limit=100${after ? `&after=${after}` : ''}`, { headers });
+    subreddits = response.data.data.children.map((subreddit: any) => subreddit.data.display_name).filter((subredditName: string) => subredditName.slice(0, 2) != 'u_');
+    if (response.data.after != null) {
+        subreddits = [ ...subreddits, ...(await getSubreddits(accessToken, response.data.after))];
+    }
+    return subreddits;
 }

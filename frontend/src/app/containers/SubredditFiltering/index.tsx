@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as style from './style.scss';
+import * as style from 'app/global-styles.scss';
 import { generateRandomString } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Button } from '@material-ui/core';
@@ -8,7 +8,7 @@ const CLIENT_ID = 'BRgd2M3wfJD7Vw';
 const CODE = 'code';
 const REDIRECT_URI = 'https://redditsubmatch.com/redirect';
 const DURATION = 'temporary';
-const SCOPE = 'identity';
+const SCOPE = 'mysubreddits%20identity';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
@@ -19,14 +19,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       fontSize: '6rem',
       marginBottom: '60vh'
     }
-  },
-  noSelect: {
-    WebkitTouchCallout: 'none',
-    WebkitUserSelect: 'none',
-    KhtmlUserSelect: 'none',
-    MozUserSelect: 'none',
-    MsUserSelect: 'none',
-    userSelect: 'none',
   },
   authBtn: {
     [theme.breakpoints.down('md')]: {
@@ -40,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     height: 80,
     width: 250,
-    backgroundImage: 'linear-gradient(45deg, #AC01B1 20%, #D000D6 70%)',
+    backgroundImage: 'linear-gradient(45deg, #FF4500 20%, #FFAA00 70%)',
     backgroundPosition: 'center center',
     borderRadius: 15,
     border: 0,
@@ -64,15 +56,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const setStorage = () => {
   localStorage.setItem('isBrowser', 'true');
-  window.sessionStorage.setItem('blacklist', 'true');
-  window.sessionStorage.setItem('exclusionList', 'false');
+  window.sessionStorage.setItem('blacklist', 'false');
+  window.sessionStorage.setItem('exclusionList', 'true');
 }
 
 const getUrl = () => {
   return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`;
 }
 
-export const Blacklist = () => {
+export const SubredditFiltering = () => {
   const styles = useStyles();
 
   return (
@@ -82,7 +74,7 @@ export const Blacklist = () => {
         direction='column'
         alignItems='center'
         style={{ height: '100%' }}>
-        <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
+        <Typography display='block' className={`${styles.title} ${style.noSelect} ${style.titleFont}`}>submatch</Typography>
         <Button href={getUrl()} onClick={setStorage} classes={{ root: styles.authBtn, label: styles.label }} size='large'>authorize</Button>
       </Grid>
     </Container>

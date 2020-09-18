@@ -5,11 +5,12 @@ import { Container, Grid, Typography, Backdrop, CircularProgress } from '@materi
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
-    fontSize: '5rem',
-    marginTop: '10vh',
-    marginBottom: '20vh',
+    fontSize: '3rem',
+    marginTop: '5vh',
+    marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
-      fontSize: '6rem',
+      fontSize: '4rem',
+      marginTop: '2.5vh'
     }
   },
   noSelect: {

@@ -6,11 +6,13 @@ import ProjectLinks from '../../../components/ProjectLinks';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
-    fontSize: '5rem',
-    marginTop: '10vh',
+    fontSize: '3rem',
+    marginTop: '5vh',
     marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
-      fontSize: '6rem',
+      fontSize: '4rem',
+      marginTop: '2.5vh',
+      marginBottom: '20vh',
     }
   },
   text: {
@@ -46,9 +48,6 @@ export const Error = ({response}) => {
         style={{ height: '100%' }}>
         <Typography display='block' className={`${styles.title} ${style.titleFont} ${styles.noSelect}`}>submatch</Typography>
         <Grid
-          direction='row'
-          justify='center'
-          alignItems='flex-start'
           style={{ height: '200px'}}>
           <Typography align='center' className={`${styles.text} ${styles.noSelect}`} display='block'>Error while attempting action:</Typography>
           <Typography align='center' className={`${styles.text} ${styles.error}`} display='block'>{response.message}</Typography>

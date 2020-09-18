@@ -1,0 +1,9 @@
+to test:
+
+- change client id and redirect uri for blacklist container
+
+eXt2JEkOg8Lspg
+http://localhost:3000/redirect
+- change client id and redirect uri for home container
+
+- change redirect container data.testing to true

@@ -2,16 +2,15 @@
 
 .normal {
   height: 100%;
-  width: 100%;
-  background: linear-gradient( rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) ), url('../../../assets/background.png') no-repeat center center fixed;
+  background: linear-gradient( rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) ), url('../assets/background.png') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 
   a {
-  	text-decoration: none;
-  	color: inherit;
+    text-decoration: none;
+    color: inherit;
   }
 }
 
@@ -45,7 +44,7 @@
 }
 
 .text {
-	@include noSelect;
+  @include noSelect;
 }
 
 .bottomButtons {
@@ -55,11 +54,4 @@
   width: auto;
   height: 5rem;
   margin-left: 20px;
-}
-
-.centeredButtons {
-  margin-top: 8rem;
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 4rem;
 }

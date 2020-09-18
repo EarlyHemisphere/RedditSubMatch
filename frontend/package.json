@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "webpack-dev-server --mode development --hot --progress --colors --port 3000 --open",
+    "start": "webpack-dev-server --mode development --hot --progress --colors --port 3000 --open --host 0.0.0.0 --disable-host-check",
     "demo": "webpack-dev-server --mode development --config ./webpack.config.demo.js --hot --progress --colors --port 3001 --open",
     "build": "webpack -p --progress --colors",
     "builddemo": "webpack -p --config ./webpack.config.demo.js --progress --colors",
@@ -77,6 +77,7 @@
     "@types/jest": "^24.0.15",
     "@types/material-ui": "^0.21.7",
     "@types/react-modal": "^3.10.5",
+    "axios": "^0.20.0",
     "firebase": "^6.3.4",
     "material-ui-icons": "^1.0.0-beta.36",
     "mobx": "^5.11.0",

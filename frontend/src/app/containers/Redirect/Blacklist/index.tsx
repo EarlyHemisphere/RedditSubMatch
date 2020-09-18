@@ -9,11 +9,13 @@ import { useAsync } from 'react-async';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   title: {
-    fontSize: '5rem',
-    marginTop: '10vh',
+    fontSize: '3rem',
+    marginTop: '5vh',
     marginBottom: '10vh',
     [theme.breakpoints.down('md')]: {
-      fontSize: '6rem',
+      fontSize: '4rem',
+      marginBottom: '20vh',
+      marginTop: '2.5vh'
     }
   },
   noSelect: {

@@ -2,11 +2,11 @@ import * as React from 'react';
 import * as style from './style.scss';
 import { generateRandomString } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { Button, Container, Grid, Typography, Hidden, Link, IconButton, CircularProgress } from '@material-ui/core';
+import { Button, Container, Grid, Typography, Hidden, CircularProgress } from '@material-ui/core';
 import 'typeface-roboto';
-import { GitHub, Reddit } from '@material-ui/icons';
 import { db } from 'app/firebase/base';
 import Async from 'react-async';
+import ProjectLinks from 'app/components/ProjectLinks';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw';
 const CODE = 'code';
@@ -126,10 +126,11 @@ const setLocalStorage = (optOut = false) => {
   localStorage.setItem('isBrowser', 'true');
   localStorage.setItem('optOut', optOut.toString());
   window.sessionStorage.setItem('blacklist', 'false');
+  window.sessionStorage.setItem('exclusionList', 'false');
 }
 
 const getSignupCount = async () => {
-  return await db.ref('signup_count').once('value');
+  return db.ref('signup_count').once('value');
 }
 
 export default function home() {
@@ -144,7 +145,7 @@ export default function home() {
         direction='column'
         alignItems='center'
         classes={{ root: styles.parentGrid }}>
-        <Typography variant='h1' display='block' className={`${style.title} ${styles.noSelect} ${styles.title}`}>submatch</Typography>
+        <Typography variant='h1' display='block' className={`${style.title} ${style.noSelect} ${styles.title}`}>submatch</Typography>
         <Async promiseFn={getSignupCount}>
           <Async.Loading>
             <Typography display='block' variant='overline' className={`${styles.signupCount} ${styles.noSelect}`}>signup count: <CircularProgress classes={{ root: styles.circularProgress }}/></Typography>
@@ -170,18 +171,7 @@ export default function home() {
         </Hidden>
         <Button href={getUrl(true)} onClick={((e) => setLocalStorage(true))} variant='outlined' size='large' classes={{ root: styles.optOut }}>unsubscribe</Button>
         <Hidden mdDown>
-          <Grid classes={{ root: style.bottomButtons }}>
-            <Link href='https://github.com/LucasAnderson07/RedditSubMatch'>
-              <IconButton>
-                <GitHub fontSize='large' />
-              </IconButton>
-            </Link>
-            <Link href='https://www.reddit.com/r/submatch'>
-              <IconButton>
-                <Reddit color='secondary' fontSize='large' />
-              </IconButton>
-            </Link>
-          </Grid>
+          <ProjectLinks style={style.bottomButtons}/>
         </Hidden>
       </Grid>
     </Container>
