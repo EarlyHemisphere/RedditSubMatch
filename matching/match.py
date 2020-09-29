@@ -191,11 +191,10 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += messageFooter
         try:
             submatch_bot.redditor(user).message(messageSubject, message)
+            logger.info(f'messaged empty user {user}')
         except APIException as e:
-            logger.info(f'user {user} is now an invalid account')
-            logger.info(e['error_type'])
-            logger.info(e)
-        logger.info(f'messaged empty user {user}')
+            logger.error(f'received error when attempting to message {user}')
+            logger.error(e)
 
     print('messaging unmatched users...')
     for user in unmatched_users:
@@ -206,11 +205,10 @@ def message_users(matches, unmatched_users, empty_users, round_number):
         message += messageFooter
         try:
             submatch_bot.redditor(user).message(messageSubject, message)
+            logger.info(f'messaged unmatched user {user}')
         except APIException as e:
-            logger.info(f'user {user} is now an invalid account')
-            logger.info(e['error_type'])
-            logger.info(e)
-        logger.info(f'messaged unmatched user {user}')
+            logger.error(f'received error when attempting to message {user}')
+            logger.error(e)
 
     print('messaging matched users...')
     for match in matches:
@@ -229,12 +227,11 @@ def message_users(matches, unmatched_users, empty_users, round_number):
             message += messageFooter
             try:
                 submatch_bot.redditor(user1).message(messageSubject, message)
+                logger.info(f'messaged matched user {user1} about match with {user2}')
             except APIException as e:
-                logger.error(f'user {user1} has a match but their account is invalid')
-                logger.error(e['error_type'])
-                logger.info(e)
+                logger.error(f'received error when attempting to message {user1}')
+                logger.error(e)
                 deleted_matches.append(user2)
-            logger.info(f'messaged matched user {user1} about match with {user2}')
             user1, user2 = user2, user1
 
     return deleted_matches
@@ -305,7 +302,7 @@ def main():
 
     if round_number > 1 and not previous_unmatched_users:
         raise Exception('previous unmatched user retrieval failed')
-
+    
     # with open(f'{cur_dir}/dump/users.json', 'r') as f:
     #     users = json.load(f)['users']
     
@@ -339,6 +336,13 @@ def main():
 
     logger.info('matching users...')
     matches, unmatched_users = match_users(users, subs, prioritization_queue, forbidden_matches, MAX_SUBSCRIBERS)
+
+    # with open(f'{cur_dir}/output/matches.json', 'r') as f:
+    #     matches = json.load(f)['matches']
+
+    # with open(f'{cur_dir}/output/unmatched_users.json', 'r') as f:
+    #     unmatched_users = json.load(f)['users']
+
     logger.debug(matches)
     logger.debug(unmatched_users)
 
