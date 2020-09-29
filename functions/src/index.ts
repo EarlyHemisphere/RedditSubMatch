@@ -151,21 +151,21 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             } else {
                                 console.log('USER HAS EMPTY EXCLUSION LIST. RETURNING EMPTY');
                             }
+
+                            console.log('ADDING TO FIRESTORE DB');
+                            await firestore.collection('users').doc(USERNAME).set({
+                                timestamp: new Date().getTime(),
+                                refreshToken,
+                            });
+
+                            res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
+                            return;
                         }
                     }).catch(err => {
                         console.error('Error getting user document', err);
                         res({ ok: false, message: 'db read failure'});
                         return;
                     });
-
-                console.log('ADDING TO FIRESTORE DB');
-                await firestore.collection('users').doc(USERNAME).set({
-                    timestamp: new Date().getTime(),
-                    refreshToken,
-                });
-
-                res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
-                return;
             }).catch(err => {
                 console.error(err)
                 console.error('Submit: Error getting user document', JSON.stringify(err));
