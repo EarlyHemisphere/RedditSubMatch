@@ -332,6 +332,8 @@ def main():
         for exclusion_list in exclusion_list_data:
             exclusion_lists[exclusion_list['name']] = exclusion_list['subreddits']
             logger.debug(f'read exclusion list for user {exclusion_list["name"]}')
+    
+    logger.debug(exclusion_lists)
 
     # Filter out meaningless subs and subs the user has excluded
     for user in users:
