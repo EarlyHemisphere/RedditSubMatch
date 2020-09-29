@@ -286,9 +286,12 @@ def main():
                 previous_unmatched_users.add(user.lower())
     except FileNotFoundError:
         pass
+    
+    logger.debug("PREVIOUS UNMATCHED USERS: " + str(len(previous_unmatched_users)))
+    logger.debug(previous_unmatched_users)
 
-    with open(f'blacklists.json', 'r') as f:
-        logger.info(f'loading blacklists...')
+    with open('blacklists.json', 'r') as f:
+        logger.info('loading blacklists...')
         blacklists = json.load(f)
         for blacklist in blacklists:
             for user in blacklist['blacklist']:
@@ -297,8 +300,6 @@ def main():
 
     logger.debug("FORBIDDEN MATCHES: " + str(len(forbidden_matches)))
     logger.debug(forbidden_matches)
-    logger.debug("PREVIOUS UNMATCHED USERS: " + str(len(previous_unmatched_users)))
-    logger.debug(previous_unmatched_users)
 
     if round_number > 1 and not previous_unmatched_users:
         raise Exception('previous unmatched user retrieval failed')
@@ -324,9 +325,17 @@ def main():
             subs_to_ignore.append(k)
     logger.debug(subs_to_ignore)
 
-    # Filter out meaningless subs
+    exclusion_lists = {}
+    with open('exclusion_lists.json', 'r') as f:
+        logger.info('loading exclusion lists...')
+        exclusion_list_data = json.load(f)
+        for exclusion_list in exclusion_list_data:
+            exclusion_lists[exclusion_list['name']] = exclusion_list['subreddits']
+            logger.debug(f'read exclusion list for user {exclusion_list["name"]}')
+
+    # Filter out meaningless subs and subs the user has excluded
     for user in users:
-        user['subscriptions'] = [x for x in user['subscriptions'] if x not in subs_to_ignore]
+        user['subscriptions'] = [x for x in user['subscriptions'] if x not in subs_to_ignore and x not in exclusion_list[user['name']]]
 
     prioritization_queue = set()
     for i in range(len(users)):
