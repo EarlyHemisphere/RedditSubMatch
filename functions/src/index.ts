@@ -144,6 +144,7 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             console.log('USER HAS NO EXCLUSION LIST. RETURNING EMPTY');
                         } else {
                             const docData = doc.data();
+
                             if (docData) {
                                 console.log('RETURNING EXISTING EXCLUSION LIST');
                                 exclusionList = docData['subreddits'];
@@ -151,16 +152,16 @@ exports.submitUserLogin = functions.https.onCall(async (data: submitUserLogin_i)
                             } else {
                                 console.log('USER HAS EMPTY EXCLUSION LIST. RETURNING EMPTY');
                             }
-
+                            
                             console.log('ADDING TO FIRESTORE DB');
                             await firestore.collection('users').doc(USERNAME).set({
                                 timestamp: new Date().getTime(),
                                 refreshToken,
                             });
-
-                            res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
-                            return;
                         }
+
+                        res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
+                        return;
                     }).catch(err => {
                         console.error('Error getting user document', err);
                         res({ ok: false, message: 'db read failure'});
