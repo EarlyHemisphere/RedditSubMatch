@@ -58,8 +58,10 @@ export const getSubreddits = async(accessToken: string, after?: string): Promise
     }
     const response = await axios.get(`https://oauth.reddit.com/subreddits/mine/subscriber?limit=100${after ? `&after=${after}` : ''}`, { headers });
     subreddits = response.data.data.children.map((subreddit: any) => subreddit.data.display_name).filter((subredditName: string) => subredditName.slice(0, 2) != 'u_');
-    if (response.data.after != null) {
-        subreddits = [ ...subreddits, ...(await getSubreddits(accessToken, response.data.after))];
+
+    if (response.data.data.after != null) {
+        subreddits = [ ...subreddits, ...(await getSubreddits(accessToken, response.data.data.after))];
     }
+    console.log(JSON.stringify(subreddits)); 
     return subreddits;
 }
