@@ -337,7 +337,7 @@ def main():
 
     # Filter out meaningless subs and subs the user has excluded
     for user in users:
-        user['subscriptions'] = [x for x in user['subscriptions'] if x not in subs_to_ignore and x not in exclusion_list[user['name']]]
+        user['subscriptions'] = [x for x in user['subscriptions'] if x not in subs_to_ignore and x not in exclusion_lists.get(user['name'], [])]
 
     prioritization_queue = set()
     for i in range(len(users)):
