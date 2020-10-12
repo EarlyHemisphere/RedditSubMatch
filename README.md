@@ -4,4 +4,4 @@ A tool for matching Redditors with similar interests based on their subreddit su
 
 ## Website
 
-https://redditsubmatch.com/
+https://www.submatch.io/

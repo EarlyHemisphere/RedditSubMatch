@@ -9,7 +9,7 @@ export const getAccessToken = async(code: string, clientid: string, secret: stri
     const data = querystring.stringify({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: testing ? 'http://localhost:3000/redirect' : 'https://redditsubmatch.com/redirect'
+        redirect_uri: testing ? 'http://localhost:3000/redirect' : 'https://www.submatch.io/redirect'
     });
     const response = await axios.post('https://www.reddit.com/api/v1/access_token', data, { auth: { username: clientid, password: secret }});
     console.log(JSON.stringify(response.data));

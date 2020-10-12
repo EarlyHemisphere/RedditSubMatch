@@ -10,7 +10,7 @@ import ProjectLinks from 'app/components/ProjectLinks';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw';
 const CODE = 'code';
-const REDIRECT_URI = 'https://redditsubmatch.com/redirect';
+const REDIRECT_URI = 'https://www.submatch.io/redirect';
 const SIGNUP_DURATION = 'permanent';
 const OPTOUT_DURATION = 'temporary';
 const SIGNUP_SCOPE = 'mysubreddits%20identity';

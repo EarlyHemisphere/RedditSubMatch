@@ -44,8 +44,8 @@ export const Success = () => {
         style={{ height: '100%', overflow: 'hidden' }}>
         <Typography display='block' id='title' className={`${styles.title} ${style.titleFont} ${style.noSelect}`}>submatch</Typography>
         <Typography display='block' align='center' className={`${styles.text} ${style.noSelect}`}>The signup process is complete!</Typography>
-        <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${style.noSelect}`}>To change which subreddits you would like to exclude from matching, please <a href='https://redditsubmatch.com/exclude' style={{ color: 'blue' }}>click here</a>.</Typography>
-        <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${style.noSelect}`}>To create or edit a blacklist for users you get matched to, please <a href='https://redditsubmatch.com/blacklist' style={{ color: 'blue' }}>click here</a>.</Typography>
+        <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${style.noSelect}`}>To change which subreddits you would like to exclude from matching, please <a href='https://www.submatch.io/exclude' style={{ color: 'blue' }}>click here</a>.</Typography>
+        <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${style.noSelect}`}>To create or edit a blacklist for users you get matched to, please <a href='https://www.submatch.io/blacklist' style={{ color: 'blue' }}>click here</a>.</Typography>
         <Typography display='block' align='center' gutterBottom className={`${styles.text2} ${style.noSelect}`}>For more info or if you have any questions or concerns, head over to <a href='https://www.reddit.com/r/submatch' style={{ color: '#FF4500' }}>r/submatch</a>.</Typography>
         <ProjectLinks style={ style.centeredButtons } />
       </Grid>

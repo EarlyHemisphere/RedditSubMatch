@@ -6,7 +6,7 @@ import { Container, Grid, Typography, Button } from '@material-ui/core';
 
 const CLIENT_ID = 'BRgd2M3wfJD7Vw';
 const CODE = 'code';
-const REDIRECT_URI = 'https://redditsubmatch.com/redirect';
+const REDIRECT_URI = 'https://www.submatch.io/redirect';
 const DURATION = 'temporary';
 const SCOPE = 'identity';
 
