@@ -136,13 +136,13 @@ export const submitUserLogin = functions.https.onCall(async (data: submitUserLog
                             } else {
                                 console.log('USER HAS EMPTY EXCLUSION LIST. RETURNING EMPTY');
                             }
-                            
-                            console.log('ADDING TO FIRESTORE DB');
-                            await firestore.collection('users').doc(USERNAME).set({
-                                timestamp: new Date().getTime(),
-                                refreshToken,
-                            });
                         }
+
+                        console.log('ADDING TO FIRESTORE DB');
+                        await firestore.collection('users').doc(USERNAME).set({
+                            timestamp: new Date().getTime(),
+                            refreshToken,
+                        });
 
                         res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
                         return;
