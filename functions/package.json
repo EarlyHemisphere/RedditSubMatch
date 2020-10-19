@@ -13,7 +13,7 @@
   "engines": {
     "node": "10"
   },
-  "main": "lib/index.js",
+  "main": "lib/functions/src/index.js",
   "dependencies": {
     "axios": "^0.19.2",
     "firebase": "^7.7.0",

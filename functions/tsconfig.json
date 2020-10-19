@@ -8,7 +8,8 @@
     "strict": true,
     "target": "es2017",
     "esModuleInterop": true,
-    "noImplicitReturns": false
+    "noImplicitReturns": false,
+    "resolveJsonModule": true
   },
   "compileOnSave": true,
   "include": [

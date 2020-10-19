@@ -24,7 +24,7 @@ def get_user_subscriptions():
     erroredUsers = []
     i = 1
     
-    with open('nsfw_subs.json', 'r') as f:
+    with open('../shared/nsfw_subs.json', 'r') as f:
         nsfw_subs = set(json.load(f)['subs'])
     
     with open('db.json') as f:

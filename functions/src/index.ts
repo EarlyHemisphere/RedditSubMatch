@@ -181,10 +181,10 @@ exports.deleteUserInfo = functions.https.onCall(async (data: submitUserLogin_i) 
         let accessToken: string;
         let resp: any;
         let userInfo;
-
+        
         const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
         const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
-
+        
         console.log('DELETING USER INFO');
         console.log('GETTING ACCESS TOKEN');
         try {

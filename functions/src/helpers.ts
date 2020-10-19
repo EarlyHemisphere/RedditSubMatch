@@ -1,6 +1,6 @@
 import axios from 'axios';
 import querystring from 'querystring';
-import { nsfwSubs } from './nsfw_subs';
+import nsfwSubs from '../../shared/nsfw_subs.json';
 
 const userAgent = 'Submatch/0.1 by u/submatch_bot';
 
@@ -58,7 +58,7 @@ export const getSubreddits = async(accessToken: string, after?: string): Promise
         'Authorization': `Bearer ${accessToken}`
     }
     const response = await axios.get(`https://oauth.reddit.com/subreddits/mine/subscriber?limit=100${after ? `&after=${after}` : ''}`, { headers });
-    subreddits = response.data.data.children.map((subreddit: any) => subreddit.data.display_name).filter((subredditName: string) => subredditName.slice(0, 2) != 'u_' && !nsfwSubs.includes(subredditName));
+    subreddits = response.data.data.children.map((subreddit: any) => subreddit.data.display_name).filter((subredditName: string) => subredditName.slice(0, 2) != 'u_' && !nsfwSubs.subs.includes(subredditName));
 
     if (response.data.data.after != null) {
         subreddits = [ ...subreddits, ...(await getSubreddits(accessToken, response.data.data.after))];
