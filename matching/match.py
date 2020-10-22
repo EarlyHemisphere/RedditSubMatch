@@ -186,7 +186,7 @@ def message_users(matches, unmatched_users, empty_users, round_number):
     print('messaging empty users...')
     for user in empty_users:
         message = f'Hey {user},\n\n'
-        message += 'Unfortunately, you were not matched this round because you currently aren\'t subscribed to any subreddits!\n\n'
+        message += 'Unfortunately, you were not matched this round because you currently aren\'t subscribed to any subreddits that are SFW!\n\n'
         message += 'If you would like to participate in the next round of matching, please subscribe to subreddits that align with your interests.\n\n'
         message += messageFooter
         try:
