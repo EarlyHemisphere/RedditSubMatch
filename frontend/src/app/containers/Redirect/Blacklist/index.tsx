@@ -118,6 +118,14 @@ export const Blacklist = () => {
   const usernameRegex = RegExp('^[A-Za-z0-9_-]+$');
   const defaultHelperText = 'Enter a list of usernames seperated by commas';
 
+  const handleResolve = (data) => {
+    if (data.ok) {
+      openSuccessSnackbar();
+    } else {
+      openErrorSnackbar();
+    }
+  }
+
   const openSuccessSnackbar = () => {
     setSuccessSnackbarOpen(true);
     window.sessionStorage.setItem('currentBlacklist', textFieldValue!);
@@ -130,7 +138,7 @@ export const Blacklist = () => {
     setErrorSnackbarOpen(true);
   }
 
-  const { isPending, run } = useAsync({ deferFn: updateBlacklist, onResolve: openSuccessSnackbar, onReject: openErrorSnackbar });
+  const { isPending, run } = useAsync({ deferFn: updateBlacklist, onResolve: handleResolve, onReject: openErrorSnackbar });
 
   const textFieldChange = (e: any) => {
     const newVal = e.target.value;
