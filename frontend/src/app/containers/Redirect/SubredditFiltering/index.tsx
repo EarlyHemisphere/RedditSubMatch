@@ -196,6 +196,7 @@ export const SubredditFiltering = (props: Props) => {
   const [visibleSelected, setVisibleSelected] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false);
+  const [cloudErrorSnackbarOpen, setCloudErrorSnackbarOpen] = React.useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = React.useState(false);
 
   const handleToggle = (subreddit: string) => () => {
@@ -238,10 +239,15 @@ export const SubredditFiltering = (props: Props) => {
   }
 
   const submissionComplete = (data: any) => {
-    if (completionFn) {
-      completionFn(data);
+    if (data.ok) {
+      if (completionFn) {
+        completionFn(data);
+      } else {
+        setSuccessSnackbarOpen(true);
+      }
     } else {
-      setSuccessSnackbarOpen(true);
+      setCloudErrorSnackbarOpen(true);
+      console.log(data);
     }
   }
 
@@ -262,12 +268,16 @@ export const SubredditFiltering = (props: Props) => {
     } 
   }
 
+  const closeSuccessSnackbar = () => {
+    setSuccessSnackbarOpen(false);
+  }
+  
   const closeErrorSnackbar = () => {
     setErrorSnackbarOpen(false);
   }
-
-  const closeSuccessSnackbar = () => {
-    setSuccessSnackbarOpen(false);
+  
+  const closeCloudErrorSnackbar = () => {
+    setCloudErrorSnackbarOpen(false);
   }
 
   return (
@@ -344,6 +354,14 @@ export const SubredditFiltering = (props: Props) => {
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           classes={{ root: styles.snackBarRoot }}>
           <MuiAlert elevation={6} variant='filled' severity='error' classes={{ root: styles.alertRoot, icon: styles.alertIcon }}>Please leave at least one subreddit deselected.</MuiAlert>
+        </Snackbar>
+        <Snackbar
+          open={cloudErrorSnackbarOpen}
+          autoHideDuration={5000}
+          onClose={closeCloudErrorSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          classes={{ root: styles.snackBarRoot }}>
+          <MuiAlert elevation={6} variant='filled' severity='error' classes={{ root: styles.alertRoot, icon: styles.alertIcon }}>An error occurred when submitting your exclusion list. Please try again later.</MuiAlert>
         </Snackbar>
         <Snackbar
           open={successSnackbarOpen}
