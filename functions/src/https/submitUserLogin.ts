@@ -13,6 +13,7 @@ export const submitUserLogin = functions.https.onCall(async (data: submitUserLog
         let resp: any;
         let subreddits: string[] = [];
         let exclusionList: string[] = [];
+        let writeToDb = true;
 
         const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
         const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
@@ -101,9 +102,9 @@ export const submitUserLogin = functions.https.onCall(async (data: submitUserLog
                                     res({ ok: false, message: 'Revoking of current refresh token failed. Error code: ' + err.response.status });
                                     return;
                                 }
-
-                                refreshToken = savedRefreshToken
-                                accessToken = (await testRefreshToken(refreshToken, clientid, secret))['access_token'];
+                                
+                                accessToken = (await testRefreshToken(savedRefreshToken, clientid, secret))['access_token'];
+                                writeToDb = false;
                             }
                         }
                     } else {
@@ -138,11 +139,13 @@ export const submitUserLogin = functions.https.onCall(async (data: submitUserLog
                             }
                         }
 
-                        console.log('ADDING TO FIRESTORE DB');
-                        await firestore.collection('users').doc(USERNAME).set({
-                            timestamp: new Date().getTime(),
-                            refreshToken,
-                        });
+                        if (writeToDb) {
+                            console.log('ADDING TO FIRESTORE DB');
+                            await firestore.collection('users').doc(USERNAME).set({
+                                timestamp: new Date().getTime(),
+                                refreshToken,
+                            });
+                        }
 
                         res({ ok: true, message: 'success', accessToken, subreddits, exclusionList });
                         return;
