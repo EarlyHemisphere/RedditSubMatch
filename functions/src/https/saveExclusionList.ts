@@ -9,41 +9,41 @@ interface saveExclusionList_i {
 
 const firestore = admin.firestore();
 
-export const saveExclusionList = functions.https.onCall( async (data: saveExclusionList_i) => {
-    return new Promise(async (res, rej) => {
-        const accessToken = data.accessToken;
-        const exclusionList = data.exclusionList;
-        let userInfo: any;
+export const saveExclusionList = functions.https.onCall(async(data: saveExclusionList_i) => {
+    const accessToken = data.accessToken;
+    const exclusionList = data.exclusionList;
 
-        if (!accessToken) {
-            console.error('ACCESS TOKEN IS UNDEFINED');
-            res({ ok: false, message: 'Problem with data' });
-            return;
-        }
-        console.log(accessToken);
+    if (!accessToken) {
+        console.error('ACCESS TOKEN IS UNDEFINED');
+        return { ok: false, message: 'Problem with data' };
+    }
+    console.log(accessToken);
 
-        console.log('GETTING USERNAME');
-        try {
-            userInfo = await getUserInfo(accessToken);
-        } catch(err) {
-            console.error('FAILED GETTING USER INFO', err.response.data);
-            res({ ok: false, message: 'Authentication information sent was invalid. Has your session lasted longer than an hour? Error code: ' + err.response.status });
-            return;
-        }
-        const USERNAME = userInfo.name;
+    console.log('GETTING USERNAME');
+    return getUserInfo(accessToken).then(info => {
+        const USERNAME = info.name;
         console.log(USERNAME);
 
         if (exclusionList.length == 0 || exclusionList.length == 1 && exclusionList[0] == '') {
             console.log('REMOVING USER EXCLUSION LIST');
-            await firestore.collection('exclusion lists').doc(USERNAME).delete();
+            return firestore.collection('exclusion lists').doc(USERNAME).delete();
         } else {
             console.log('WRITING EXCLUSION LIST TO DB');
-            await firestore.collection('exclusion lists').doc(USERNAME).set({
+            return firestore.collection('exclusion lists').doc(USERNAME).set({
                 timestamp: new Date().getTime(),
                 subreddits: exclusionList,
             });
         }
-
-        res({ ok: true, message: 'success' });
-    });
+    }).then(() => {
+        return { ok: true };
+    }).catch(e => {
+        if (e && e.isAxiosError && e.response) {
+            console.error('FAILED TO SAVE EXCLUSION LIST', e.response.data);
+            return { ok: false, message: 'Failed to save exclusion list: ' + e.response.data };
+        } else {
+            console.error('FAILED TO SAVE EXCLUSION LIST');
+            console.error(e);
+            return { ok: false, message: 'Failed to save exclusion list' }
+        }
+    })
 });

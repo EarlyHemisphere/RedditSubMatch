@@ -5,42 +5,26 @@ import { getAccessToken, getUserInfo } from '../helpers';
 const firestore = admin.firestore();
 
 export const getTokenAndBlacklist = functions.https.onCall(async (data) => {
-    return new Promise(async (res, rej) => {
-        let accessToken: string;
-        let userInfo: any;
+    const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
+    const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
 
-        const clientid = functions.config().reddit[data.testing ? 'test_clientid' : 'clientid'];
-        const secret = functions.config().reddit[data.testing ? 'test_secret' : 'secret'];
-
-        try {
-            ({ accessToken } = await getAccessToken(data['code'], clientid, secret, data.testing));
-        } catch(err) {
-            console.error('FAILED GETTING ACCESS TOKEN', err.response.data);
-            res({ ok: false, message: 'Access token retrieval failed. Error code: ' + err.response.status });
-            return;
-        }
+    return getAccessToken(data['code'], clientid, secret, data.testing).then((response): any => {
+        const accessToken = response.accessToken;
 
         if (!accessToken) {
             console.error('ACCESS TOKEN IS UNDEFINED');
-            res({ ok: false, message: 'User token retrieval failed' });
-            return;
+            return { ok: false, message: 'User token retrieval failed' };
         }
 
         console.log('GETTING USERNAME');
-        try {
-            userInfo = await getUserInfo(accessToken);
-        } catch(err) {
-            console.error('FAILED GETTING USER INFO', err.response.data);
-            res({ ok: false, message: 'Retrieval of user identity info failed. Error code: ' + err.response.status });
-            return;
-        }
-        const USERNAME = userInfo.name;
-        console.log(USERNAME);
-        let blacklist: string[] = [];
+        return getUserInfo(accessToken).then(info => {
+            const username = info.name;
+            console.log(username);
+            
+            console.log('GETTING BLACKLIST FROM FIRESTORE');
+            return firestore.collection('blacklists').doc(username).get().then(doc => {
+                let blacklist: string[] = [];
 
-        console.log('GETTING BLACKLIST FROM FIRESTORE');
-        firestore.collection('blacklists').doc(USERNAME).get()
-            .then(async (doc) => {
                 if (!doc.exists) {
                     console.log('USER HAS NO BLACKLIST ENTRY. RETURNING EMPTY');
                 } else {
@@ -53,12 +37,18 @@ export const getTokenAndBlacklist = functions.https.onCall(async (data) => {
                         console.log('USER HAS EMPTY BLACKLIST. RETURNING EMPTY');
                     }
                 }
-                res({ ok: true, accessToken: accessToken, username: userInfo.name, blacklist: blacklist });
-                return;
-            }).catch(err => {
-                console.error('Error getting user document', err);
-                res({ ok: false, message: 'db read failure'});
-                return;
+        
+                return { ok: true, accessToken, username, blacklist };
             });
+        });
+    }).catch(e => {
+        if (e && e.isAxiosError && e.response) {
+            console.error('FAILED TO RETRIEVE BLACKLIST', e.response.data);
+            return { ok: false, message: 'Failed to retrieve blacklist: ' + e.response.data };
+        } else {
+            console.error('FAILED TO RETRIEVE BLACKLIST');
+            console.error(e);
+            return { ok: false, message: 'Failed to retrieve blacklist' };
+        }
     });
 });
