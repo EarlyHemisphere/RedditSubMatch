@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const updateBlacklist = async (newBlacklist) => {
   const saveBlacklist = firebaseFunctions.httpsCallable('saveBlacklist')
-  await saveBlacklist({ accessToken: window.sessionStorage.getItem('token'), blacklist: newBlacklist})
+  return saveBlacklist({ accessToken: window.sessionStorage.getItem('token'), blacklist: newBlacklist})
 }
 
 export const Blacklist = () => {
@@ -118,14 +118,6 @@ export const Blacklist = () => {
   const usernameRegex = RegExp('^[A-Za-z0-9_-]+$');
   const defaultHelperText = 'Enter a list of usernames seperated by commas';
 
-  const handleResolve = (data) => {
-    if (data.ok) {
-      openSuccessSnackbar();
-    } else {
-      openErrorSnackbar();
-    }
-  }
-
   const openSuccessSnackbar = () => {
     setSuccessSnackbarOpen(true);
     window.sessionStorage.setItem('currentBlacklist', textFieldValue!);
@@ -136,6 +128,14 @@ export const Blacklist = () => {
     setSuccessSnackbarOpen(false);
     setBlacklistChanged(true);
     setErrorSnackbarOpen(true);
+  }
+
+  const handleResolve = (data) => {
+    if (data.data && data.data.ok) {
+      openSuccessSnackbar();
+    } else {
+      openErrorSnackbar();
+    }
   }
 
   const { isPending, run } = useAsync({ deferFn: updateBlacklist, onResolve: handleResolve, onReject: openErrorSnackbar });
