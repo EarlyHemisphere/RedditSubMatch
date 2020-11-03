@@ -20,6 +20,12 @@ export const Redirect = (props) => {
   const blacklist = window.sessionStorage.getItem('blacklist') == 'true';
   const exclusionList = window.sessionStorage.getItem('exclusionList') == 'true';
 
+  const stateValid = (identifier: string) =>  {
+    const storedState = window.sessionStorage.getItem(`state_${identifier}`);
+    window.sessionStorage.removeItem(`state_${identifier}`);
+    return storedState == qs.parse(props.location.search).state;
+  }
+
   const renderSuccess = (loading, response, component) => {
     localStorage.setItem('isBrowser', 'false');
     if (response['blacklist']) {
@@ -38,45 +44,65 @@ export const Redirect = (props) => {
   
   if (blacklist) {
     if (isBrowser) {
-      const getTokenAndBlacklist = firebaseFunctions.httpsCallable('getTokenAndBlacklist');
-      getTokenAndBlacklist(data).then(r => {
-        setResponse(r.data);
+      if (!stateValid('blacklist')) {
         setLoading(false);
-      });
+        setResponse({ ok: false, message: 'State was not maintained, so the request cannot be safely completed. Please try again later.' });
+      } else {
+        const getTokenAndBlacklist = firebaseFunctions.httpsCallable('getTokenAndBlacklist');
+        getTokenAndBlacklist(data).then(r => {
+          setResponse(r.data);
+          setLoading(false);
+        });
+      }
     }
     return renderSuccess(loading, response, <Blacklist/>);
   } else if (exclusionList) {
     if (isBrowser) {
-      const getTokenAndExclusionList = firebaseFunctions.httpsCallable('getTokenAndExclusionList');
-      getTokenAndExclusionList(data).then(r => {
-        setSubreddits(r.data['subreddits']);
-        setAccessToken(r.data['accessToken']);
-        setExclusionSubList(r.data['exclusionList']);
-        setResponse(r.data);
+      if (!stateValid('exclusion')) {
         setLoading(false);
-      });
+        setResponse({ ok: false, message: 'State was not maintained, so the request cannot be safely completed. Please try again later.' });
+      } else {
+        const getTokenAndExclusionList = firebaseFunctions.httpsCallable('getTokenAndExclusionList');
+        getTokenAndExclusionList(data).then(r => {
+          setSubreddits(r.data['subreddits']);
+          setAccessToken(r.data['accessToken']);
+          setExclusionSubList(r.data['exclusionList']);
+          setResponse(r.data);
+          setLoading(false);
+        });
+      }
     }
     return renderSuccess(loading, response, <SubredditFiltering accessToken={accessToken} subreddits={subreddits} exclusionList={exclusionSubList} />);
   } else {
     if (optOut) {
       if (isBrowser) {
-        const deleteUserInfo = firebaseFunctions.httpsCallable('deleteUserInfo');
-        deleteUserInfo(data).then(r => {
+        if (!stateValid('optout')) {
           setLoading(false);
-          setResponse(r.data);
-        });
+          setResponse({ ok: false, message: 'State was not maintained, so the request cannot be safely completed. Please try again later.' });
+        } else {
+          const deleteUserInfo = firebaseFunctions.httpsCallable('deleteUserInfo');
+          deleteUserInfo(data).then(r => {
+            setLoading(false);
+            setResponse(r.data);
+          });
+        }
       }
       return renderSuccess(loading, response, <Optout/>);
     } else {
       if (isBrowser) {
-        const submitUserLogin = firebaseFunctions.httpsCallable('submitUserLogin');
-        submitUserLogin(data).then(r => {
-          setSubreddits(r.data['subreddits']);
-          setAccessToken(r.data['accessToken']);
-          setExclusionSubList(r.data['exclusionList']);
+        if (!stateValid('signup')) {
           setLoading(false);
-          setResponse(r.data);
-        });
+          setResponse({ ok: false, message: 'State was not maintained, so the request cannot be safely completed. Please try again later.' });
+        } else {
+          const submitUserLogin = firebaseFunctions.httpsCallable('submitUserLogin');
+          submitUserLogin(data).then(r => {
+            setSubreddits(r.data['subreddits']);
+            setAccessToken(r.data['accessToken']);
+            setExclusionSubList(r.data['exclusionList']);
+            setLoading(false);
+            setResponse(r.data);
+          });
+        }
       }
       return renderSuccess(loading, response, <Optin accessToken={accessToken} subreddits={subreddits} exclusionList={exclusionSubList}/>);
     }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as style from './style.scss';
-import { generateRandomString } from 'app/helpers';
+import { generateAndStoreState } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Button, Container, Grid, Typography, Hidden, CircularProgress } from '@material-ui/core';
 import 'typeface-roboto';
@@ -119,14 +119,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const getUrl = (optOut = false) => {
-  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`;
+  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateAndStoreState(optOut ? 'optout' : 'signup')}&redirect_uri=${REDIRECT_URI}&duration=${optOut ? OPTOUT_DURATION : SIGNUP_DURATION}&scope=${optOut ? OPTOUT_SCOPE : SIGNUP_SCOPE}`;
 }
 
-const setLocalStorage = (optOut = false) => {
+const redirect = (optOut = false) => {
   localStorage.setItem('isBrowser', 'true');
   localStorage.setItem('optOut', optOut.toString());
   window.sessionStorage.setItem('blacklist', 'false');
   window.sessionStorage.setItem('exclusionList', 'false');
+  window.location.replace(getUrl(optOut));
 }
 
 const getSignupCount = async () => {
@@ -165,11 +166,11 @@ export default function home() {
             }
           </Async.Fulfilled>
         </Async>
-        <Button href={getUrl()} onClick={(() => setLocalStorage())} classes={{ root: styles.signupBtn, label: styles.label }} size='large'>sign up</Button>
+        <Button onClick={(() => redirect())} classes={{ root: styles.signupBtn, label: styles.label }} size='large'>sign up</Button>
         <Hidden mdDown>
           <Typography variant='button' display='block' style={{ marginBottom: '2rem', marginTop: '6rem' }} classes={{ root: styles.noSelect }}>or, if you're already signed up</Typography>
         </Hidden>
-        <Button href={getUrl(true)} onClick={((e) => setLocalStorage(true))} variant='outlined' size='large' classes={{ root: styles.optOut }}>unsubscribe</Button>
+        <Button onClick={(() => redirect(true))} variant='outlined' size='large' classes={{ root: styles.optOut }}>unsubscribe</Button>
         <Hidden mdDown>
           <ProjectLinks style={style.bottomButtons}/>
         </Hidden>

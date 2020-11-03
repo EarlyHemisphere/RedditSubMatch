@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as style from './style.scss';
-import { generateRandomString } from 'app/helpers';
+import { generateAndStoreState } from 'app/helpers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Button } from '@material-ui/core';
 
@@ -62,14 +62,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const setStorage = () => {
+const redirect = () => {
   localStorage.setItem('isBrowser', 'true');
   window.sessionStorage.setItem('blacklist', 'true');
   window.sessionStorage.setItem('exclusionList', 'false');
+  window.location.replace(getUrl());
 }
 
 const getUrl = () => {
-  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateRandomString()}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`;
+  return `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=${CODE}&state=${generateAndStoreState('blacklist')}&redirect_uri=${REDIRECT_URI}&duration=${DURATION}&scope=${SCOPE}`;
 }
 
 export const Blacklist = () => {
@@ -83,7 +84,7 @@ export const Blacklist = () => {
         alignItems='center'
         style={{ height: '100%' }}>
         <Typography display='block' className={`${styles.title} ${styles.noSelect} ${style.titleFont}`}>submatch</Typography>
-        <Button href={getUrl()} onClick={setStorage} classes={{ root: styles.authBtn, label: styles.label }} size='large'>authorize</Button>
+        <Button onClick={redirect} classes={{ root: styles.authBtn, label: styles.label }} size='large'>authorize</Button>
       </Grid>
     </Container>
   );
