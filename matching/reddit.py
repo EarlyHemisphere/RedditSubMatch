@@ -30,20 +30,21 @@ def get_user_subscriptions():
 		refresh_token = db_entry['refreshToken']
 		if not refresh_token:
 			raise Exception('null refreshToken')
-	
+		
 		reddit_user = praw.Reddit(client_id=Config.webapp_client_id,
 						 client_secret=Config.webapp_client_secret,
 						 refresh_token=refresh_token,
 						 user_agent=Config.user_agent)
-
+		
 		user_subs = []
 		
 		while True: # loop to keep trying if response 500 is received
 			try:
 				# suspended users cannot be messaged, and therefore cannot take part in matching
 				if reddit_user.user.me().is_suspended:
-					continue
-
+					logger.info('user is suspended')
+					break
+				
 				subreddit_subscriptions = list(reddit_user.user.subreddits(limit=None))
 
 				for subreddit in subreddit_subscriptions:
@@ -58,6 +59,7 @@ def get_user_subscriptions():
 				else:
 					users.append({'name': db_entry['name'], 'subscriptions': user_subs})
 				logger.debug(user_subs)
+				break
 			except ServerError as e:
 				print(e)
 				print(db_entry)
