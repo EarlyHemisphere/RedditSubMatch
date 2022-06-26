@@ -1,4 +1,4 @@
 praw==5.4.0
-numpy==1.21.0
+numpy==1.22.0
 protobuf==3.15.0
 google-cloud==0.34.0
