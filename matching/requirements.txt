@@ -1,4 +1,4 @@
 praw==5.4.0
 numpy==1.22.0
-protobuf==3.18.3
+protobuf==4.25.8
 google-cloud==0.34.0
